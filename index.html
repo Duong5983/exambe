@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exam Portal</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      min-height: 100vh;
+      color: white;
+    }
+
+    /* ==============================
+       LANDING PAGE
+    ============================== */
+    #landing {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .logo { font-size: 52px; margin-bottom: 16px; }
+    h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .notice {
+      background: rgba(255,193,7,0.15);
+      border: 1px solid rgba(255,193,7,0.4);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #ffd54f;
+      margin-bottom: 28px;
+      text-align: left;
+      line-height: 1.9;
+    }
+    .btn-start {
+      background: linear-gradient(135deg, #4f8ef7, #7c3aed);
+      color: white;
+      border: none;
+      padding: 16px 48px;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(79,142,247,0.4);
+    }
+
+    /* ==============================
+       LOADING OVERLAY
+    ============================== */
+    #loadingOverlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(15,20,50,0.95);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .spinner {
+      width: 52px; height: 52px;
+      border: 5px solid rgba(255,255,255,0.1);
+      border-top-color: #4f8ef7;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ==============================
+       EXAM SCREEN
+    ============================== */
+    #examScreen {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* --- Header --- */
+    .exam-header {
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 60px;
+    }
+    .brand { font-weight: 700; font-size: 18px; }
+    .brand span { color: #7c3aed; }
+
+    /* --- Timer --- */
+    .timer-wrap { display: flex; align-items: center; gap: 10px; }
+    .timer-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+    #timer {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 6px 20px;
+      font-size: 22px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 3px;
+      transition: all 0.3s;
+      min-width: 110px;
+      text-align: center;
+    }
+    #timer.warn {
+      color: #ffaa00;
+      border-color: #ffaa00;
+      background: rgba(255,170,0,0.12);
+    }
+    #timer.danger {
+      color: #ff4444;
+      border-color: #ff4444;
+      background: rgba(255,68,68,0.12);
+      animation: blink 0.8s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .header-note { font-size: 12px; color: rgba(255,255,255,0.4); text-align: right; }
+
+    /* --- iFrame area --- */
+    .exam-body { flex: 1; position: relative; }
+    #examFrame {
+      width: 100%;
+      height: calc(100vh - 60px);
+      border: none;
+      display: block;
+      background: white;
+      transition: filter 0.4s;
+    }
+
+    /* ==============================
+       WARN POPUP (5 phút & 1 phút)
+    ============================== */
+    .warn-popup {
+      display: none;
+      position: fixed;
+      top: 80px; right: 24px;
+      background: #1e1e2e;
+      border: 1px solid;
+      border-radius: 14px;
+      padding: 20px 24px;
+      max-width: 320px;
+      width: 90%;
+      z-index: 500;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      animation: slideIn 0.4s ease;
+    }
+    @keyframes slideIn {
+      from { opacity:0; transform: translateX(30px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+    .warn-popup.warn5 { border-color: #ffaa00; }
+    .warn-popup.warn1 { border-color: #ff4444; }
+    .warn-popup .wp-icon { font-size: 32px; margin-bottom: 10px; }
+    .warn-popup h3 { font-size: 16px; margin-bottom: 6px; }
+    .warn-popup p { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; margin-bottom: 14px; }
+    .btn-close-popup {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    .btn-close-popup:hover { background: rgba(255,255,255,0.2); }
+
+    /* ==============================
+       TIME-UP BLOCKER (Màn chặn)
+    ============================== */
+    #timeUpBlocker {
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    /* Lớp blur phía sau */
+    #timeUpBlocker::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(10,5,30,0.85);
+      backdrop-filter: blur(8px);
+    }
+
+    .timeup-card {
+      position: relative;
+      background: linear-gradient(145deg, #1e1e3f, #2a1a4e);
+      border: 2px solid #ff4444;
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 460px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(255,68,68,0.3), 0 24px 60px rgba(0,0,0,0.6);
+      animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    @keyframes popIn {
+      from { opacity:0; transform: scale(0.7); }
+      to   { opacity:1; transform: scale(1); }
+    }
+
+    .timeup-icon { font-size: 64px; margin-bottom: 16px; animation: shake 0.5s ease 0.5s; }
+    @keyframes shake {
+      0%,100%{transform:rotate(0)} 25%{transform:rotate(-10deg)} 75%{transform:rotate(10deg)}
+    }
+    .timeup-card h2 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ff4444;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .timeup-card p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .timeup-card p strong { color: #ffaa00; }
+
+    /* Nút xác nhận đã submit */
+    #btnConfirmSubmit {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border: none;
+      padding: 16px 0;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-bottom: 14px;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(34,197,94,0.4);
+    }
+    #btnConfirmSubmit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(34,197,94,0.5);
+    }
+
+    /* Countdown nhỏ trên màn chặn */
+    .block-countdown {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 6px;
+    }
+
+    /* Warning text nhỏ */
+    .warn-text {
+      font-size: 11px;
+      color: rgba(255,68,68,0.7);
+      margin-top: 10px;
+    }
+
+    /* ==============================
+       DONE SCREEN
+    ============================== */
+    #doneScreen {
+      display: none;
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      z-index: 99999;
+      align-items: center;
+      justify-content: center;
+    }
+    .done-card {
+      text-align: center;
+      padding: 40px;
+      max-width: 420px;
+    }
+    .done-icon { font-size: 80px; margin-bottom: 20px; animation: bounceIn 0.6s ease; }
+    @keyframes bounceIn {
+      0%  { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100%{ transform: scale(1); }
+    }
+    .done-card h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: #22c55e; }
+    .done-card p { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.8; }
+    .done-card .tagline {
+      margin-top: 24px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== LANDING ========== -->
+  <div id="landing">
+    <div class="card">
+      <div class="logo">📝</div>
+      <h1>Exam Portal</h1>
+      <p class="subtitle">Hệ thống thi trực tuyến<br/>Đề thi được chọn ngẫu nhiên mỗi lần vào</p>
+      <div class="notice">
+        ⚠️ <strong>Lưu ý trước khi thi:</strong><br/>
+        • Cần có <strong>tài khoản Google (Gmail)</strong><br/>
+        • Nên đăng nhập Gmail <strong>trước</strong> khi bấm bắt đầu<br/>
+        • Email của bạn sẽ được ghi lại tự động<br/>
+        • Thời gian thi: <strong>90 phút</strong><br/>
+        • <strong>Bắt buộc bấm Submit</strong> trên Form khi hết giờ<br/>
+        • Không tắt hoặc reload trang trong khi làm bài
+      </div>
+      <button class="btn-start" onclick="startExam()">🚀 Bắt đầu thi ngay</button>
+    </div>
+  </div>
+
+  <!-- ========== LOADING ========== -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <p style="color:rgba(255,255,255,0.6); font-size:14px;">Đang tải đề thi của bạn...</p>
+  </div>
+
+  <!-- ========== EXAM SCREEN ========== -->
+  <div id="examScreen">
+    <div class="exam-header">
+      <div class="brand">Exam<span>Portal</span></div>
+
+      <div class="timer-wrap">
+        <span class="timer-label">Thời gian còn lại</span>
+        <div id="timer">90:00</div>
+      </div>
+
+      <div class="header-note">
+        📧 Email sẽ được ghi lại<br/>khi bạn Submit
+      </div>
+    </div>
+
+    <div class="exam-body">
+      <iframe id="examFrame" src="" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- ========== WARN POPUP: 5 PHÚT ========== -->
+  <div class="warn-popup warn5" id="popup5">
+    <div class="wp-icon">⚠️</div>
+    <h3 style="color:#ffaa00;">Còn 5 phút!</h3>
+    <p>Bạn còn <strong style="color:#ffaa00;">5 phút</strong> để hoàn thành bài thi.<br/>
+       Hãy kiểm tra lại các câu trả lời và <strong style="color:white;">bấm Submit</strong> trên Form trước khi hết giờ!</p>
+    <button class="btn-close-popup" onclick="closePopup('popup5')">✅ Tôi hiểu rồi</button>
+  </div>
+
+  <!-- ========== WARN POPUP: 1 PHÚT ========== -->
+  <div class="warn-popup warn1" id="popup1">
+    <div class="wp-icon">🚨</div>
+    <h3 style="color:#ff4444;">Còn 1 phút — Submit ngay!</h3>
+    <p>Chỉ còn <strong style="color:#ff4444;">60 giây</strong>! Cuộn xuống cuối Form và bấm nút<br/>
+       <strong style="color:white;">Submit</strong> ngay bây giờ!</p>
+    <button class="btn-close-popup" onclick="closePopup('popup1')">🏃 Submit ngay!</button>
+  </div>
+
+  <!-- ========== TIME-UP BLOCKER ========== -->
+  <div id="timeUpBlocker">
+    <div class="timeup-card">
+      <div class="timeup-icon">⏰</div>
+      <h2>Hết giờ!</h2>
+      <p>
+        Thời gian thi <strong>90 phút</strong> đã kết thúc.<br/><br/>
+        Nếu bạn chưa Submit, hãy <strong>cuộn xuống cuối Form</strong>
+        phía sau và bấm nút <strong style="color:#22c55e;">Submit</strong> ngay bây giờ.<br/><br/>
+        Sau khi Submit xong, bấm nút bên dưới để xác nhận.
+      </p>
+
+      <button id="btnConfirmSubmit" onclick="confirmSubmit()">
+        ✅ Tôi đã Submit bài rồi
+      </button>
+
+      <p class="warn-text">
+        ⛔ Nếu không Submit, bài thi của bạn sẽ không được ghi nhận.
+      </p>
+      <p class="block-countdown" id="blockCountdown"></p>
+    </div>
+  </div>
+
+  <!-- ========== DONE SCREEN ========== -->
+  <div id="doneScreen">
+    <div class="done-card">
+      <div class="done-icon">🎉</div>
+      <h2>Nộp bài thành công!</h2>
+      <p>
+        Cảm ơn bạn đã hoàn thành bài thi.<br/>
+        Kết quả sẽ được thông báo sau.<br/><br/>
+        Bạn có thể <strong>đóng tab này</strong> rồi.
+      </p>
+      <p class="tagline">© Exam Portal · Powered by Google Forms</p>
+    </div>
+  </div>
+
+  <script>
+    // =============================================
+    //  CẤU HÌNH — Chỉnh sửa tại đây
+    // =============================================
+    const CONFIG = {
+      examMinutes: 90,          // ⏱️ Thời gian thi (phút)
+      warnAt5Min:  true,        // Cảnh báo lúc còn 5 phút
+      warnAt1Min:  true,        // Cảnh báo lúc còn 1 phút
+    };
+
+    // Chỉ lưu FORM ID, không lưu link đầy đủ
+    const formIDs = [
+      "1FAIpQLSe_FORM_ID_1_PASTE_HERE",
+      "1FAIpQLSe_FORM_ID_2_PASTE_HERE",
+      "1FAIpQLSe_FORM_ID_3_PASTE_HERE",
+      "1FAIpQLSe_FORM_ID_4_PASTE_HERE",
+      "1FAIpQLSe_FORM_ID_5_PASTE_HERE",
+    ];
+
+    // =============================================
+    //  STATE
+    // =============================================
+    let totalSeconds   = CONFIG.examMinutes * 60;
+    let timerInterval  = null;
+    let warned5        = false;
+    let warned1        = false;
+    let examEnded      = false;
+
+    // =============================================
+    //  START EXAM
+    // =============================================
+    function startExam() {
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.style.display = "flex";
+
+      setTimeout(() => {
+        // Random chọn form
+        const idx        = Math.floor(Math.random() * formIDs.length);
+        const embedURL   = `https://docs.google.com/forms/d/e/${formIDs[idx]}/viewform?embedded=true`;
+
+        document.getElementById("examFrame").src = embedURL;
+
+        overlay.style.display    = "none";
+        document.getElementById("landing").style.display     = "none";
+        document.getElementById("examScreen").style.display  = "flex";
+
+        startCountdown();
+
+        // Chặn F5 / reload / đóng tab trong khi thi
+        window.addEventListener("beforeunload", handleBeforeUnload);
+      }, 1200);
+    }
+
+    // =============================================
+    //  COUNTDOWN
+    // =============================================
+    function startCountdown() {
+      const timerEl = document.getElementById("timer");
+
+      timerInterval = setInterval(() => {
+        if (examEnded) return;
+
+        const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+        const s = (totalSeconds % 60).toString().padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+
+        // Màu sắc theo thời gian
+        timerEl.className = "";
+        if (totalSeconds <= 300) timerEl.classList.add("warn");    // ≤ 5 phút: vàng
+        if (totalSeconds <= 60)  timerEl.classList.add("danger");  // ≤ 1 phút: đỏ nháy
+
+        // Cảnh báo 5 phút
+        if (CONFIG.warnAt5Min && !warned5 && totalSeconds === 300) {
+          warned5 = true;
+          showPopup("popup5");
+        }
+
+        // Cảnh báo 1 phút
+        if (CONFIG.warnAt1Min && !warned1 && totalSeconds === 60) {
+          warned1 = true;
+          closePopup("popup5"); // đóng popup 5p nếu còn
+          showPopup("popup1");
+        }
+
+        // Hết giờ
+        if (totalSeconds <= 0) {
+          clearInterval(timerInterval);
+          timerEl.textContent = "00:00";
+          triggerTimeUp();
+          return;
+        }
+
+        totalSeconds--;
+      }, 1000);
+    }
+
+    // =============================================
+    //  POPUP WARN
+    // =============================================
+    function showPopup(id) {
+      const el = document.getElementById(id);
+      el.style.display = "block";
+      // Tự đóng sau 15 giây
+      setTimeout(() => closePopup(id), 15000);
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    // =============================================
+    //  HẾT GIỜ — BLOCKER
+    // =============================================
+    function triggerTimeUp() {
+      examEnded = true;
+
+      // Đóng các popup còn lại
+      closePopup("popup5");
+      closePopup("popup1");
+
+      // Blur iFrame nhưng KHÔNG ẩn (học viên vẫn cần submit trên Form)
+      document.getElementById("examFrame").style.filter = "blur(3px) brightness(0.4)";
+      document.getElementById("examFrame").style.pointerEvents = "none"; // tắt click iFrame
+
+      // Hiện màn chặn
+      const blocker = document.getElementById("timeUpBlocker");
+      blocker.style.display = "flex";
+
+      // Đếm ngược nhỏ — nhắc submit trong 10 phút, sau đó khoá hẳn
+      let graceSeconds = 600; // 10 phút gia hạn để submit
+      const blockEl = document.getElementById("blockCountdown");
+
+      const graceInterval = setInterval(() => {
+        if (graceSeconds <= 0) {
+          clearInterval(graceInterval);
+          forceClose();
+          return;
+        }
+        const gm = Math.floor(graceSeconds / 60).toString().padStart(2,"0");
+        const gs = (graceSeconds % 60).toString().padStart(2,"0");
+        blockEl.textContent = `⏳ Cửa sổ Submit sẽ đóng sau ${gm}:${gs}`;
+        graceSeconds--;
+      }, 1000);
+    }
+
+    // =============================================
+    //  HỌC VIÊN BẤM "ĐÃ SUBMIT"
+    // =============================================
+    function confirmSubmit() {
+      // Xoá listener reload
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+
+      // Ẩn blocker, hiện done screen
+      document.getElementById("timeUpBlocker").style.display = "none";
+      document.getElementById("examScreen").style.display    = "none";
+
+      const done = document.getElementById("doneScreen");
+      done.style.display = "flex";
+    }
+
+    // =============================================
+    //  KHOÁ HẲN sau grace period
+    // =============================================
+    function forceClose() {
+      // Ẩn iFrame hoàn toàn
+      document.getElementById("examFrame").src = "";
+      document.getElementById("examFrame").style.display = "none";
+
+      // Cập nhật nội dung blocker
+      document.getElementById("timeUpBlocker").innerHTML = `
+        <div class="timeup-card" style="border-color:#555;">
+          <div class="timeup-icon">🔒</div>
+          <h2 style="color:#aaa;">Phiên thi đã đóng</h2>
+          <p style="color:rgba(255,255,255,0.5);">
+            Thời gian nộp bài đã hết.<br/>
+            Bài thi của bạn <strong style="color:#ff4444;">không được ghi nhận</strong><br/>
+            do chưa Submit trước thời hạn.
+          </p>
+          <p style="margin-top:20px; font-size:12px; color:rgba(255,255,255,0.25);">
+            Vui lòng liên hệ giám thị nếu có vấn đề.
+          </p>
+        </div>`;
+    }
+
+    // =============================================
+    //  CHẶN RELOAD / ĐÓNG TAB TRONG KHI THI
+    // =============================================
+    function handleBeforeUnload(e) {
+      if (examEnded) return;
+      e.preventDefault();
+      e.returnValue = "Bạn đang trong kỳ thi! Rời trang sẽ mất bài làm.";
+      return e.returnValue;
+    }
+  </script>
+</body>
+</html>
