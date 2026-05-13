@@ -15,63 +15,149 @@
     }
 
     /* ==============================
-       LANDING PAGE
+       LANDING
     ============================== */
     #landing {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      padding: 24px;
     }
     .card {
       background: rgba(255,255,255,0.07);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 20px;
-      padding: 48px 40px;
-      max-width: 480px;
-      width: 90%;
+      padding: 40px 36px;
+      max-width: 500px;
+      width: 100%;
       text-align: center;
       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
-    .logo { font-size: 52px; margin-bottom: 16px; }
+    .logo { font-size: 52px; margin-bottom: 14px; }
     h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
     .subtitle {
       font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 28px;
-      line-height: 1.6;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 24px;
+      line-height: 1.7;
     }
+
+    /* Progress bar 4 lần thi */
+    .progress-section {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+    .progress-title {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .progress-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .step {
+      flex: 1;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      transition: all 0.4s;
+    }
+    .step.done   { background: #22c55e; }
+    .step.active { background: #4f8ef7; animation: stepPulse 1.5s infinite; }
+    @keyframes stepPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    .progress-labels {
+      display: flex;
+      gap: 8px;
+    }
+    .plabel {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+    }
+    .plabel.done   { color: #22c55e; }
+    .plabel.active { color: #4f8ef7; font-weight: 600; }
+
+    /* Lịch sử thi */
+    .history-list {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+    .history-item .hi-left { display: flex; align-items: center; gap: 8px; }
+
     .notice {
-      background: rgba(255,193,7,0.15);
-      border: 1px solid rgba(255,193,7,0.4);
+      background: rgba(255,193,7,0.12);
+      border: 1px solid rgba(255,193,7,0.35);
       border-radius: 10px;
-      padding: 14px 18px;
+      padding: 14px 16px;
       font-size: 13px;
       color: #ffd54f;
-      margin-bottom: 28px;
+      margin-bottom: 22px;
       text-align: left;
       line-height: 1.9;
     }
+
     .btn-start {
       background: linear-gradient(135deg, #4f8ef7, #7c3aed);
       color: white;
       border: none;
-      padding: 16px 48px;
+      padding: 16px;
       font-size: 17px;
-      font-weight: 600;
+      font-weight: 700;
       border-radius: 50px;
       cursor: pointer;
       transition: all 0.3s;
       width: 100%;
+      margin-bottom: 12px;
     }
-    .btn-start:hover {
+    .btn-start:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(79,142,247,0.4);
+      box-shadow: 0 10px 30px rgba(79,142,247,0.45);
+    }
+    .btn-start:disabled {
+      background: rgba(255,255,255,0.1);
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .btn-reset {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.35);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-reset:hover {
+      border-color: rgba(255,100,100,0.5);
+      color: rgba(255,100,100,0.7);
     }
 
     /* ==============================
-       LOADING OVERLAY
+       LOADING
     ============================== */
     #loadingOverlay {
       display: none;
@@ -100,8 +186,6 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
-    /* --- Header --- */
     .exam-header {
       background: rgba(0,0,0,0.5);
       backdrop-filter: blur(10px);
@@ -114,93 +198,83 @@
       top: 0;
       z-index: 100;
       height: 60px;
+      gap: 12px;
     }
-    .brand { font-weight: 700; font-size: 18px; }
+    .brand { font-weight: 700; font-size: 18px; white-space: nowrap; }
     .brand span { color: #7c3aed; }
 
-    /* --- Timer --- */
-    .timer-wrap { display: flex; align-items: center; gap: 10px; }
-    .timer-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .attempt-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+    }
+
+    .timer-wrap { display: flex; align-items: center; gap: 8px; }
+    .timer-label { font-size: 11px; color: rgba(255,255,255,0.45); white-space: nowrap; }
     #timer {
       background: rgba(255,255,255,0.1);
       border: 2px solid rgba(255,255,255,0.2);
       border-radius: 10px;
-      padding: 6px 20px;
-      font-size: 22px;
+      padding: 5px 16px;
+      font-size: 20px;
       font-weight: 700;
       font-family: 'Courier New', monospace;
-      letter-spacing: 3px;
-      transition: all 0.3s;
-      min-width: 110px;
+      letter-spacing: 2px;
+      min-width: 100px;
       text-align: center;
+      transition: all 0.3s;
     }
-    #timer.warn {
-      color: #ffaa00;
-      border-color: #ffaa00;
-      background: rgba(255,170,0,0.12);
-    }
-    #timer.danger {
-      color: #ff4444;
-      border-color: #ff4444;
-      background: rgba(255,68,68,0.12);
-      animation: blink 0.8s ease-in-out infinite;
-    }
+    #timer.warn   { color: #ffaa00; border-color: #ffaa00; background: rgba(255,170,0,0.12); }
+    #timer.danger { color: #ff4444; border-color: #ff4444; background: rgba(255,68,68,0.12); animation: blink 0.8s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    .header-note { font-size: 12px; color: rgba(255,255,255,0.4); text-align: right; }
-
-    /* --- iFrame area --- */
-    .exam-body { flex: 1; position: relative; }
+    .exam-body { flex: 1; }
     #examFrame {
-      width: 100%;
-      height: calc(100vh - 60px);
-      border: none;
-      display: block;
-      background: white;
+      width: 100%; height: calc(100vh - 60px);
+      border: none; display: block; background: white;
       transition: filter 0.4s;
     }
 
     /* ==============================
-       WARN POPUP (5 phút & 1 phút)
+       WARN POPUPS
     ============================== */
     .warn-popup {
       display: none;
       position: fixed;
-      top: 80px; right: 24px;
+      top: 76px; right: 20px;
       background: #1e1e2e;
       border: 1px solid;
       border-radius: 14px;
-      padding: 20px 24px;
-      max-width: 320px;
-      width: 90%;
+      padding: 18px 22px;
+      max-width: 300px;
+      width: 88%;
       z-index: 500;
       box-shadow: 0 12px 40px rgba(0,0,0,0.5);
       animation: slideIn 0.4s ease;
     }
-    @keyframes slideIn {
-      from { opacity:0; transform: translateX(30px); }
-      to   { opacity:1; transform: translateX(0); }
-    }
+    @keyframes slideIn { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
     .warn-popup.warn5 { border-color: #ffaa00; }
     .warn-popup.warn1 { border-color: #ff4444; }
-    .warn-popup .wp-icon { font-size: 32px; margin-bottom: 10px; }
-    .warn-popup h3 { font-size: 16px; margin-bottom: 6px; }
-    .warn-popup p { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; margin-bottom: 14px; }
+    .warn-popup .wp-icon { font-size: 28px; margin-bottom: 8px; }
+    .warn-popup h3 { font-size: 15px; margin-bottom: 6px; }
+    .warn-popup p  { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 12px; }
     .btn-close-popup {
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      padding: 8px 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 13px;
-      width: 100%;
-      transition: background 0.2s;
+      color: white; padding: 7px 16px;
+      border-radius: 20px; cursor: pointer;
+      font-size: 12px; width: 100%;
     }
     .btn-close-popup:hover { background: rgba(255,255,255,0.2); }
 
     /* ==============================
-       TIME-UP BLOCKER (Màn chặn)
+       TIME-UP BLOCKER
     ============================== */
     #timeUpBlocker {
       display: none;
@@ -208,87 +282,49 @@
       z-index: 9999;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
     }
-
-    /* Lớp blur phía sau */
     #timeUpBlocker::before {
       content: '';
       position: absolute; inset: 0;
-      background: rgba(10,5,30,0.85);
+      background: rgba(10,5,30,0.88);
       backdrop-filter: blur(8px);
     }
-
     .timeup-card {
       position: relative;
       background: linear-gradient(145deg, #1e1e3f, #2a1a4e);
       border: 2px solid #ff4444;
       border-radius: 24px;
-      padding: 48px 40px;
-      max-width: 460px;
+      padding: 44px 36px;
+      max-width: 440px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 0 60px rgba(255,68,68,0.3), 0 24px 60px rgba(0,0,0,0.6);
+      box-shadow: 0 0 60px rgba(255,68,68,0.25);
       animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
     }
-    @keyframes popIn {
-      from { opacity:0; transform: scale(0.7); }
-      to   { opacity:1; transform: scale(1); }
-    }
-
-    .timeup-icon { font-size: 64px; margin-bottom: 16px; animation: shake 0.5s ease 0.5s; }
-    @keyframes shake {
-      0%,100%{transform:rotate(0)} 25%{transform:rotate(-10deg)} 75%{transform:rotate(10deg)}
-    }
+    @keyframes popIn { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
+    .timeup-icon { font-size: 60px; margin-bottom: 14px; }
     .timeup-card h2 {
-      font-size: 28px;
-      font-weight: 800;
-      color: #ff4444;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      font-size: 26px; font-weight: 800;
+      color: #ff4444; margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 2px;
     }
     .timeup-card p {
-      font-size: 14px;
-      color: rgba(255,255,255,0.7);
-      line-height: 1.7;
-      margin-bottom: 28px;
+      font-size: 14px; color: rgba(255,255,255,0.68);
+      line-height: 1.7; margin-bottom: 24px;
     }
-    .timeup-card p strong { color: #ffaa00; }
-
-    /* Nút xác nhận đã submit */
     #btnConfirmSubmit {
       background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: white;
-      border: none;
-      padding: 16px 0;
-      width: 100%;
-      font-size: 16px;
-      font-weight: 700;
-      border-radius: 50px;
-      cursor: pointer;
-      margin-bottom: 14px;
+      color: white; border: none;
+      padding: 15px; width: 100%;
+      font-size: 16px; font-weight: 700;
+      border-radius: 50px; cursor: pointer;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(34,197,94,0.35);
       transition: all 0.3s;
-      box-shadow: 0 6px 20px rgba(34,197,94,0.4);
     }
-    #btnConfirmSubmit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(34,197,94,0.5);
-    }
-
-    /* Countdown nhỏ trên màn chặn */
-    .block-countdown {
-      font-size: 12px;
-      color: rgba(255,255,255,0.35);
-      margin-top: 6px;
-    }
-
-    /* Warning text nhỏ */
-    .warn-text {
-      font-size: 11px;
-      color: rgba(255,68,68,0.7);
-      margin-top: 10px;
-    }
+    #btnConfirmSubmit:hover { transform: translateY(-2px); }
+    .warn-text  { font-size: 11px; color: rgba(255,68,68,0.65); margin-top: 8px; }
+    .block-countdown { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 8px; }
 
     /* ==============================
        DONE SCREEN
@@ -300,322 +336,520 @@
       z-index: 99999;
       align-items: center;
       justify-content: center;
+      padding: 24px;
     }
-    .done-card {
-      text-align: center;
-      padding: 40px;
-      max-width: 420px;
+    .done-card { text-align: center; max-width: 460px; width: 100%; }
+    .done-icon { font-size: 72px; margin-bottom: 18px; animation: bounceIn 0.6s ease; }
+    @keyframes bounceIn { 0%{transform:scale(0);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+    .done-card h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+    .done-card p  { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.8; }
+
+    /* Progress mini trong done screen */
+    .done-progress {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 20px;
+      margin: 24px 0;
     }
-    .done-icon { font-size: 80px; margin-bottom: 20px; animation: bounceIn 0.6s ease; }
-    @keyframes bounceIn {
-      0%  { transform: scale(0); opacity: 0; }
-      60% { transform: scale(1.2); opacity: 1; }
-      100%{ transform: scale(1); }
+    .done-progress-title { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 12px; }
+    .done-steps { display: flex; gap: 8px; margin-bottom: 10px; }
+    .done-step {
+      flex: 1; height: 10px; border-radius: 5px;
+      background: rgba(255,255,255,0.1);
     }
-    .done-card h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: #22c55e; }
-    .done-card p { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.8; }
-    .done-card .tagline {
-      margin-top: 24px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.25);
+    .done-step.done   { background: #22c55e; }
+    .done-step.active { background: #4f8ef7; }
+    .done-step-labels { display: flex; gap: 8px; }
+    .done-step-label  { flex: 1; text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); }
+    .done-step-label.done   { color: #22c55e; }
+    .done-step-label.active { color: #4f8ef7; }
+
+    .done-next-hint {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 8px;
+      padding: 12px 16px;
+      background: rgba(79,142,247,0.1);
+      border: 1px solid rgba(79,142,247,0.25);
+      border-radius: 10px;
     }
+    .done-completed {
+      font-size: 13px;
+      color: #22c55e;
+      margin-top: 8px;
+      padding: 12px 16px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 10px;
+    }
+    .tagline { margin-top: 20px; font-size: 11px; color: rgba(255,255,255,0.2); }
   </style>
 </head>
 <body>
 
-  <!-- ========== LANDING ========== -->
-  <div id="landing">
-    <div class="card">
-      <div class="logo">📝</div>
-      <h1>Exam Portal</h1>
-      <p class="subtitle">Hệ thống thi trực tuyến<br/>Đề thi được chọn ngẫu nhiên mỗi lần vào</p>
-      <div class="notice">
-        ⚠️ <strong>Lưu ý trước khi thi:</strong><br/>
-        • Cần có <strong>tài khoản Google (Gmail)</strong><br/>
-        • Nên đăng nhập Gmail <strong>trước</strong> khi bấm bắt đầu<br/>
-        • Email của bạn sẽ được ghi lại tự động<br/>
-        • Thời gian thi: <strong>90 phút</strong><br/>
-        • <strong>Bắt buộc bấm Submit</strong> trên Form khi hết giờ<br/>
-        • Không tắt hoặc reload trang trong khi làm bài
+<!-- ========== LANDING ========== -->
+<div id="landing">
+  <div class="card">
+    <div class="logo">📝</div>
+    <h1>Exam Portal</h1>
+    <p class="subtitle">Hệ thống thi trực tuyến<br/>Hoàn thành 4 lần thi để ôn tập đầy đủ kiến thức</p>
+
+    <!-- Tiến trình 4 lần thi -->
+    <div class="progress-section">
+      <div class="progress-title">📊 Tiến trình của bạn</div>
+      <div class="progress-steps" id="progressSteps">
+        <div class="step" id="step0"></div>
+        <div class="step" id="step1"></div>
+        <div class="step" id="step2"></div>
+        <div class="step" id="step3"></div>
       </div>
-      <button class="btn-start" onclick="startExam()">🚀 Bắt đầu thi ngay</button>
-    </div>
-  </div>
-
-  <!-- ========== LOADING ========== -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-    <p style="color:rgba(255,255,255,0.6); font-size:14px;">Đang tải đề thi của bạn...</p>
-  </div>
-
-  <!-- ========== EXAM SCREEN ========== -->
-  <div id="examScreen">
-    <div class="exam-header">
-      <div class="brand">Exam<span>Portal</span></div>
-
-      <div class="timer-wrap">
-        <span class="timer-label">Thời gian còn lại</span>
-        <div id="timer">90:00</div>
+      <div class="progress-labels" id="progressLabels">
+        <div class="plabel" id="lbl0">Lần 1</div>
+        <div class="plabel" id="lbl1">Lần 2</div>
+        <div class="plabel" id="lbl2">Lần 3</div>
+        <div class="plabel" id="lbl3">Lần 4</div>
       </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
 
-      <div class="header-note">
-        📧 Email sẽ được ghi lại<br/>khi bạn Submit
+    <div class="notice" id="mainNotice">
+      ⚠️ <strong>Lưu ý trước khi thi:</strong><br/>
+      • Cần có <strong>tài khoản Google (Gmail)</strong><br/>
+      • Nên đăng nhập Gmail <strong>trước</strong> khi bấm bắt đầu<br/>
+      • Email của bạn sẽ được ghi lại tự động<br/>
+      • Thời gian thi: <strong>90 phút / lần</strong><br/>
+      • <strong>Bắt buộc bấm Submit</strong> trên Form khi hết giờ
+    </div>
+
+    <button class="btn-start" id="btnStart" onclick="startExam()">🚀 Bắt đầu thi</button>
+    <button class="btn-reset" onclick="resetProgress()">🔄 Reset tiến trình (dev)</button>
+  </div>
+</div>
+
+<!-- ========== LOADING ========== -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <p style="color:rgba(255,255,255,0.6);font-size:14px;">Đang tải đề thi...</p>
+</div>
+
+<!-- ========== EXAM SCREEN ========== -->
+<div id="examScreen">
+  <div class="exam-header">
+    <div class="brand">Exam<span>Portal</span></div>
+    <div class="header-center">
+      <span class="attempt-label" id="headerAttempt"></span>
+    </div>
+    <div class="timer-wrap">
+      <span class="timer-label">Còn lại</span>
+      <div id="timer">90:00</div>
+    </div>
+  </div>
+  <div class="exam-body">
+    <iframe id="examFrame" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- ========== WARN POPUP 5 PHÚT ========== -->
+<div class="warn-popup warn5" id="popup5">
+  <div class="wp-icon">⚠️</div>
+  <h3 style="color:#ffaa00;">Còn 5 phút!</h3>
+  <p>Hãy kiểm tra lại bài và <strong style="color:white;">bấm Submit</strong> trên Form trước khi hết giờ!</p>
+  <button class="btn-close-popup" onclick="closePopup('popup5')">✅ Tôi hiểu rồi</button>
+</div>
+
+<!-- ========== WARN POPUP 1 PHÚT ========== -->
+<div class="warn-popup warn1" id="popup1">
+  <div class="wp-icon">🚨</div>
+  <h3 style="color:#ff4444;">Còn 1 phút — Submit ngay!</h3>
+  <p>Cuộn xuống cuối Form và bấm <strong style="color:white;">Submit</strong> ngay!</p>
+  <button class="btn-close-popup" onclick="closePopup('popup1')">🏃 Submit ngay!</button>
+</div>
+
+<!-- ========== TIME-UP BLOCKER ========== -->
+<div id="timeUpBlocker">
+  <div class="timeup-card">
+    <div class="timeup-icon">⏰</div>
+    <h2>Hết giờ!</h2>
+    <p>
+      Thời gian thi <strong>90 phút</strong> đã kết thúc.<br/><br/>
+      Cuộn xuống cuối Form phía sau và bấm
+      <strong style="color:#22c55e;">Submit</strong> ngay bây giờ,
+      sau đó bấm xác nhận bên dưới.
+    </p>
+    <button id="btnConfirmSubmit" onclick="confirmSubmit()">✅ Tôi đã Submit bài rồi</button>
+    <p class="warn-text">⛔ Chưa Submit → bài thi không được ghi nhận</p>
+    <p class="block-countdown" id="blockCountdown"></p>
+  </div>
+</div>
+
+<!-- ========== DONE SCREEN ========== -->
+<div id="doneScreen">
+  <div class="done-card">
+    <div class="done-icon" id="doneIcon">🎉</div>
+    <h2 id="doneTitle">Nộp bài thành công!</h2>
+    <p id="doneMsg"></p>
+
+    <div class="done-progress">
+      <div class="done-progress-title">📊 Tiến trình tổng thể</div>
+      <div class="done-steps">
+        <div class="done-step" id="ds0"></div>
+        <div class="done-step" id="ds1"></div>
+        <div class="done-step" id="ds2"></div>
+        <div class="done-step" id="ds3"></div>
+      </div>
+      <div class="done-step-labels">
+        <div class="done-step-label" id="dl0">Lần 1</div>
+        <div class="done-step-label" id="dl1">Lần 2</div>
+        <div class="done-step-label" id="dl2">Lần 3</div>
+        <div class="done-step-label" id="dl3">Lần 4</div>
       </div>
     </div>
 
-    <div class="exam-body">
-      <iframe id="examFrame" src="" allowfullscreen></iframe>
-    </div>
+    <div id="doneNextHint"></div>
+    <p class="tagline">© Exam Portal · Powered by Google Forms</p>
   </div>
+</div>
 
-  <!-- ========== WARN POPUP: 5 PHÚT ========== -->
-  <div class="warn-popup warn5" id="popup5">
-    <div class="wp-icon">⚠️</div>
-    <h3 style="color:#ffaa00;">Còn 5 phút!</h3>
-    <p>Bạn còn <strong style="color:#ffaa00;">5 phút</strong> để hoàn thành bài thi.<br/>
-       Hãy kiểm tra lại các câu trả lời và <strong style="color:white;">bấm Submit</strong> trên Form trước khi hết giờ!</p>
-    <button class="btn-close-popup" onclick="closePopup('popup5')">✅ Tôi hiểu rồi</button>
-  </div>
+<script>
+// ============================================================
+//  CẤU HÌNH
+// ============================================================
+const CONFIG = {
+  examMinutes  : 90,
+  storageKey   : "examPortal_progress",
+  totalAttempts: 4,
+};
 
-  <!-- ========== WARN POPUP: 1 PHÚT ========== -->
-  <div class="warn-popup warn1" id="popup1">
-    <div class="wp-icon">🚨</div>
-    <h3 style="color:#ff4444;">Còn 1 phút — Submit ngay!</h3>
-    <p>Chỉ còn <strong style="color:#ff4444;">60 giây</strong>! Cuộn xuống cuối Form và bấm nút<br/>
-       <strong style="color:white;">Submit</strong> ngay bây giờ!</p>
-    <button class="btn-close-popup" onclick="closePopup('popup1')">🏃 Submit ngay!</button>
-  </div>
+// ============================================================
+//  12 FORM IDs
+// ============================================================
+const EXAM_GROUPS = {
+  A: [
+    "1FAIpQLSe_A1_FORM_ID_HERE",
+    "1FAIpQLSe_A2_FORM_ID_HERE",
+    "1FAIpQLSe_A3_FORM_ID_HERE",
+    "1FAIpQLSe_A4_FORM_ID_HERE",
+  ],
+  B: [
+    "1FAIpQLSe_B1_FORM_ID_HERE",
+    "1FAIpQLSe_B2_FORM_ID_HERE",
+    "1FAIpQLSe_B3_FORM_ID_HERE",
+    "1FAIpQLSe_B4_FORM_ID_HERE",
+  ],
+  C: [
+    "1FAIpQLSe_C1_FORM_ID_HERE",
+    "1FAIpQLSe_C2_FORM_ID_HERE",
+    "1FAIpQLSe_C3_FORM_ID_HERE",
+    "1FAIpQLSe_C4_FORM_ID_HERE",
+  ],
+};
 
-  <!-- ========== TIME-UP BLOCKER ========== -->
-  <div id="timeUpBlocker">
-    <div class="timeup-card">
-      <div class="timeup-icon">⏰</div>
-      <h2>Hết giờ!</h2>
-      <p>
-        Thời gian thi <strong>90 phút</strong> đã kết thúc.<br/><br/>
-        Nếu bạn chưa Submit, hãy <strong>cuộn xuống cuối Form</strong>
-        phía sau và bấm nút <strong style="color:#22c55e;">Submit</strong> ngay bây giờ.<br/><br/>
-        Sau khi Submit xong, bấm nút bên dưới để xác nhận.
+const GROUP_ORDER = ["A", "B", "C"];
+
+// ============================================================
+//  STATE
+// ============================================================
+let totalSeconds  = CONFIG.examMinutes * 60;
+let timerInterval = null;
+let warned5       = false;
+let warned1       = false;
+let examEnded     = false;
+
+// ============================================================
+//  LOCAL STORAGE
+// ============================================================
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(CONFIG.storageKey);
+    return raw ? JSON.parse(raw) : { attempts: [] };
+  } catch { return { attempts: [] }; }
+}
+
+function saveProgress(data) {
+  localStorage.setItem(CONFIG.storageKey, JSON.stringify(data));
+}
+
+// ============================================================
+//  INIT LANDING
+// ============================================================
+function initLanding() {
+  const progress  = loadProgress();
+  const attempts  = progress.attempts || [];
+  const doneCount = attempts.length;
+
+  // Render progress bar
+  for (let i = 0; i < 4; i++) {
+    const stepEl = document.getElementById(`step${i}`);
+    const lblEl  = document.getElementById(`lbl${i}`);
+    if (i < doneCount) {
+      stepEl.classList.add("done");
+      lblEl.classList.add("done");
+      lblEl.textContent = `Lần ${i+1} ✓`;
+    } else if (i === doneCount && doneCount < 4) {
+      stepEl.classList.add("active");
+      lblEl.classList.add("active");
+    }
+  }
+
+  // Render lịch sử thi — chỉ hiện ngày giờ, không hiện nhóm
+  const histEl = document.getElementById("historyList");
+  if (attempts.length > 0) {
+    histEl.innerHTML = attempts.map(a => `
+      <div class="history-item">
+        <div class="hi-left">
+          <span style="color:rgba(255,255,255,0.6);">Lần ${a.attempt} — ${a.timestamp}</span>
+        </div>
+        <span style="color:#22c55e; font-size:13px;">✅</span>
+      </div>
+    `).join("");
+  } else {
+    histEl.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center;padding:6px;">Chưa có lịch sử thi</div>`;
+  }
+
+  // Cập nhật nút & notice
+  const btnStart = document.getElementById("btnStart");
+  const noticeEl = document.getElementById("mainNotice");
+
+  if (doneCount >= 4) {
+    btnStart.textContent = "✅ Đã hoàn thành 4 lần thi";
+    btnStart.disabled    = true;
+    noticeEl.innerHTML   =
+      `🎉 <strong>Bạn đã hoàn thành tất cả 4 lần thi!</strong><br/>
+       Liên hệ giảng viên để nhận kết quả tổng hợp. 🏆`;
+    noticeEl.style.borderColor = "rgba(34,197,94,0.5)";
+    noticeEl.style.background  = "rgba(34,197,94,0.1)";
+    noticeEl.style.color       = "#86efac";
+  } else {
+    btnStart.textContent = `🚀 Bắt đầu lần thi ${doneCount + 1}`;
+  }
+}
+
+// ============================================================
+//  START EXAM
+// ============================================================
+function startExam() {
+  const progress  = loadProgress();
+  const doneCount = progress.attempts.length;
+
+  if (doneCount >= 4) {
+    alert("✅ Bạn đã hoàn thành cả 4 lần thi rồi!");
+    return;
+  }
+
+  // Xác định nhóm cho lần này (ẩn với người dùng)
+  const currentGroup = GROUP_ORDER[doneCount] || "A";
+
+  // Random 1 bài trong nhóm
+  const usedExamIds  = progress.attempts
+    .filter(a => a.group === currentGroup)
+    .map(a => a.examId);
+  const pool         = EXAM_GROUPS[currentGroup].filter(id => !usedExamIds.includes(id));
+  const selectedPool = pool.length > 0 ? pool : EXAM_GROUPS[currentGroup];
+  const selectedId   = selectedPool[Math.floor(Math.random() * selectedPool.length)];
+
+  // Loading
+  document.getElementById("loadingOverlay").style.display = "flex";
+
+  setTimeout(() => {
+    const embedURL = `https://docs.google.com/forms/d/e/${selectedId}/viewform?embedded=true`;
+    document.getElementById("examFrame").src = embedURL;
+
+    // Header — chỉ hiện "Lần X / 4", không hiện nhóm
+    document.getElementById("headerAttempt").textContent = `Lần thi ${doneCount + 1} / 4`;
+
+    // Chuyển màn hình
+    document.getElementById("loadingOverlay").style.display = "none";
+    document.getElementById("landing").style.display        = "none";
+    document.getElementById("examScreen").style.display     = "flex";
+
+    // Đếm ngược
+    totalSeconds  = CONFIG.examMinutes * 60;
+    warned5       = false;
+    warned1       = false;
+    examEnded     = false;
+    startCountdown();
+
+    // Lưu tạm session
+    sessionStorage.setItem("currentExam", JSON.stringify({
+      attempt  : doneCount + 1,
+      group    : currentGroup,
+      examId   : selectedId,
+      timestamp: new Date().toLocaleDateString("vi-VN") + " " +
+                 new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+    }));
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  }, 1400);
+}
+
+// ============================================================
+//  COUNTDOWN
+// ============================================================
+function startCountdown() {
+  const timerEl = document.getElementById("timer");
+  timerInterval = setInterval(() => {
+    if (examEnded) return;
+
+    const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+    const s = (totalSeconds % 60).toString().padStart(2, "0");
+    timerEl.textContent = `${m}:${s}`;
+
+    timerEl.className = "";
+    if (totalSeconds <= 300) timerEl.classList.add("warn");
+    if (totalSeconds <= 60)  timerEl.classList.add("danger");
+
+    if (!warned5 && totalSeconds === 300) { warned5 = true; showPopup("popup5"); }
+    if (!warned1 && totalSeconds === 60)  { warned1 = true; closePopup("popup5"); showPopup("popup1"); }
+
+    if (totalSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerEl.textContent = "00:00";
+      triggerTimeUp();
+      return;
+    }
+    totalSeconds--;
+  }, 1000);
+}
+
+// ============================================================
+//  POPUP
+// ============================================================
+function showPopup(id) {
+  document.getElementById(id).style.display = "block";
+  setTimeout(() => closePopup(id), 15000);
+}
+function closePopup(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+// ============================================================
+//  HẾT GIỜ
+// ============================================================
+function triggerTimeUp() {
+  examEnded = true;
+  closePopup("popup5");
+  closePopup("popup1");
+
+  document.getElementById("examFrame").style.filter        = "blur(3px) brightness(0.35)";
+  document.getElementById("examFrame").style.pointerEvents = "none";
+  document.getElementById("timeUpBlocker").style.display   = "flex";
+
+  let graceSeconds = 600;
+  const blockEl    = document.getElementById("blockCountdown");
+  const graceTimer = setInterval(() => {
+    if (graceSeconds <= 0) { clearInterval(graceTimer); forceClose(); return; }
+    const gm = Math.floor(graceSeconds / 60).toString().padStart(2, "0");
+    const gs = (graceSeconds % 60).toString().padStart(2, "0");
+    blockEl.textContent = `⏳ Cửa sổ Submit đóng sau ${gm}:${gs}`;
+    graceSeconds--;
+  }, 1000);
+}
+
+// ============================================================
+//  CONFIRM SUBMIT
+// ============================================================
+function confirmSubmit() {
+  window.removeEventListener("beforeunload", handleBeforeUnload);
+
+  const currentExam = JSON.parse(sessionStorage.getItem("currentExam") || "{}");
+  const progress    = loadProgress();
+  progress.attempts.push(currentExam);
+  saveProgress(progress);
+
+  document.getElementById("timeUpBlocker").style.display = "none";
+  document.getElementById("examScreen").style.display    = "none";
+
+  showDoneScreen(progress.attempts);
+}
+
+// ============================================================
+//  DONE SCREEN
+// ============================================================
+function showDoneScreen(attempts) {
+  const doneCount = attempts.length;
+  document.getElementById("doneScreen").style.display = "flex";
+
+  // Progress bars
+  for (let i = 0; i < 4; i++) {
+    const stepEl = document.getElementById(`ds${i}`);
+    const lblEl  = document.getElementById(`dl${i}`);
+    if (i < doneCount) {
+      stepEl.classList.add("done");
+      lblEl.classList.add("done");
+      lblEl.textContent = `Lần ${i+1} ✓`;
+    } else if (i === doneCount) {
+      stepEl.classList.add("active");
+    }
+  }
+
+  const hintEl = document.getElementById("doneNextHint");
+
+  if (doneCount >= 4) {
+    document.getElementById("doneIcon").textContent  = "🏆";
+    document.getElementById("doneTitle").textContent = "Hoàn thành xuất sắc!";
+    document.getElementById("doneMsg").innerHTML     =
+      `Bạn đã hoàn thành <strong>toàn bộ 4 lần thi</strong>!<br/>
+       Liên hệ giảng viên để nhận kết quả tổng hợp. 🎓`;
+    hintEl.innerHTML =
+      `<div class="done-completed">🎉 Chúc mừng! Bạn đã ôn tập đầy đủ kiến thức!</div>`;
+  } else {
+    const remaining = 4 - doneCount;
+    document.getElementById("doneTitle").textContent = "Nộp bài thành công!";
+    document.getElementById("doneMsg").innerHTML     =
+      `Cảm ơn bạn đã hoàn thành lần thi <strong>${doneCount} / 4</strong>.<br/>
+       Còn <strong>${remaining} lần thi</strong> nữa, hẹn gặp lại! 💪`;
+    hintEl.innerHTML =
+      `<div class="done-next-hint">
+         📌 Quay lại trang này khi sẵn sàng để tiếp tục lần thi tiếp theo!
+       </div>`;
+  }
+}
+
+// ============================================================
+//  FORCE CLOSE
+// ============================================================
+function forceClose() {
+  document.getElementById("examFrame").src          = "";
+  document.getElementById("examFrame").style.display = "none";
+  document.getElementById("timeUpBlocker").innerHTML = `
+    <div class="timeup-card" style="border-color:#444;">
+      <div class="timeup-icon">🔒</div>
+      <h2 style="color:#888;">Phiên thi đã đóng</h2>
+      <p style="color:rgba(255,255,255,0.45);">
+        Thời gian nộp bài đã hết.<br/>
+        Bài thi <strong style="color:#ff4444;">không được ghi nhận</strong><br/>
+        do chưa Submit trước thời hạn.<br/><br/>
+        Vui lòng liên hệ giám thị.
       </p>
+    </div>`;
+}
 
-      <button id="btnConfirmSubmit" onclick="confirmSubmit()">
-        ✅ Tôi đã Submit bài rồi
-      </button>
+// ============================================================
+//  RESET
+// ============================================================
+function resetProgress() {
+  if (confirm("⚠️ Reset toàn bộ tiến trình thi? Hành động này không thể hoàn tác!")) {
+    localStorage.removeItem(CONFIG.storageKey);
+    sessionStorage.removeItem("currentExam");
+    location.reload();
+  }
+}
 
-      <p class="warn-text">
-        ⛔ Nếu không Submit, bài thi của bạn sẽ không được ghi nhận.
-      </p>
-      <p class="block-countdown" id="blockCountdown"></p>
-    </div>
-  </div>
+// ============================================================
+//  BEFORE UNLOAD
+// ============================================================
+function handleBeforeUnload(e) {
+  if (examEnded) return;
+  e.preventDefault();
+  e.returnValue = "Bạn đang trong kỳ thi! Rời trang sẽ mất bài làm.";
+  return e.returnValue;
+}
 
-  <!-- ========== DONE SCREEN ========== -->
-  <div id="doneScreen">
-    <div class="done-card">
-      <div class="done-icon">🎉</div>
-      <h2>Nộp bài thành công!</h2>
-      <p>
-        Cảm ơn bạn đã hoàn thành bài thi.<br/>
-        Kết quả sẽ được thông báo sau.<br/><br/>
-        Bạn có thể <strong>đóng tab này</strong> rồi.
-      </p>
-      <p class="tagline">© Exam Portal · Powered by Google Forms</p>
-    </div>
-  </div>
-
-  <script>
-    // =============================================
-    //  CẤU HÌNH — Chỉnh sửa tại đây
-    // =============================================
-    const CONFIG = {
-      examMinutes: 90,          // ⏱️ Thời gian thi (phút)
-      warnAt5Min:  true,        // Cảnh báo lúc còn 5 phút
-      warnAt1Min:  true,        // Cảnh báo lúc còn 1 phút
-    };
-
-    // Chỉ lưu FORM ID, không lưu link đầy đủ
-    const formIDs = [
-      "1FAIpQLSe_FORM_ID_1_PASTE_HERE",
-      "1FAIpQLSe_FORM_ID_2_PASTE_HERE",
-      "1FAIpQLSe_FORM_ID_3_PASTE_HERE",
-      "1FAIpQLSe_FORM_ID_4_PASTE_HERE",
-      "1FAIpQLSe_FORM_ID_5_PASTE_HERE",
-    ];
-
-    // =============================================
-    //  STATE
-    // =============================================
-    let totalSeconds   = CONFIG.examMinutes * 60;
-    let timerInterval  = null;
-    let warned5        = false;
-    let warned1        = false;
-    let examEnded      = false;
-
-    // =============================================
-    //  START EXAM
-    // =============================================
-    function startExam() {
-      const overlay = document.getElementById("loadingOverlay");
-      overlay.style.display = "flex";
-
-      setTimeout(() => {
-        // Random chọn form
-        const idx        = Math.floor(Math.random() * formIDs.length);
-        const embedURL   = `https://docs.google.com/forms/d/e/${formIDs[idx]}/viewform?embedded=true`;
-
-        document.getElementById("examFrame").src = embedURL;
-
-        overlay.style.display    = "none";
-        document.getElementById("landing").style.display     = "none";
-        document.getElementById("examScreen").style.display  = "flex";
-
-        startCountdown();
-
-        // Chặn F5 / reload / đóng tab trong khi thi
-        window.addEventListener("beforeunload", handleBeforeUnload);
-      }, 1200);
-    }
-
-    // =============================================
-    //  COUNTDOWN
-    // =============================================
-    function startCountdown() {
-      const timerEl = document.getElementById("timer");
-
-      timerInterval = setInterval(() => {
-        if (examEnded) return;
-
-        const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
-        const s = (totalSeconds % 60).toString().padStart(2, "0");
-        timerEl.textContent = `${m}:${s}`;
-
-        // Màu sắc theo thời gian
-        timerEl.className = "";
-        if (totalSeconds <= 300) timerEl.classList.add("warn");    // ≤ 5 phút: vàng
-        if (totalSeconds <= 60)  timerEl.classList.add("danger");  // ≤ 1 phút: đỏ nháy
-
-        // Cảnh báo 5 phút
-        if (CONFIG.warnAt5Min && !warned5 && totalSeconds === 300) {
-          warned5 = true;
-          showPopup("popup5");
-        }
-
-        // Cảnh báo 1 phút
-        if (CONFIG.warnAt1Min && !warned1 && totalSeconds === 60) {
-          warned1 = true;
-          closePopup("popup5"); // đóng popup 5p nếu còn
-          showPopup("popup1");
-        }
-
-        // Hết giờ
-        if (totalSeconds <= 0) {
-          clearInterval(timerInterval);
-          timerEl.textContent = "00:00";
-          triggerTimeUp();
-          return;
-        }
-
-        totalSeconds--;
-      }, 1000);
-    }
-
-    // =============================================
-    //  POPUP WARN
-    // =============================================
-    function showPopup(id) {
-      const el = document.getElementById(id);
-      el.style.display = "block";
-      // Tự đóng sau 15 giây
-      setTimeout(() => closePopup(id), 15000);
-    }
-
-    function closePopup(id) {
-      document.getElementById(id).style.display = "none";
-    }
-
-    // =============================================
-    //  HẾT GIỜ — BLOCKER
-    // =============================================
-    function triggerTimeUp() {
-      examEnded = true;
-
-      // Đóng các popup còn lại
-      closePopup("popup5");
-      closePopup("popup1");
-
-      // Blur iFrame nhưng KHÔNG ẩn (học viên vẫn cần submit trên Form)
-      document.getElementById("examFrame").style.filter = "blur(3px) brightness(0.4)";
-      document.getElementById("examFrame").style.pointerEvents = "none"; // tắt click iFrame
-
-      // Hiện màn chặn
-      const blocker = document.getElementById("timeUpBlocker");
-      blocker.style.display = "flex";
-
-      // Đếm ngược nhỏ — nhắc submit trong 10 phút, sau đó khoá hẳn
-      let graceSeconds = 600; // 10 phút gia hạn để submit
-      const blockEl = document.getElementById("blockCountdown");
-
-      const graceInterval = setInterval(() => {
-        if (graceSeconds <= 0) {
-          clearInterval(graceInterval);
-          forceClose();
-          return;
-        }
-        const gm = Math.floor(graceSeconds / 60).toString().padStart(2,"0");
-        const gs = (graceSeconds % 60).toString().padStart(2,"0");
-        blockEl.textContent = `⏳ Cửa sổ Submit sẽ đóng sau ${gm}:${gs}`;
-        graceSeconds--;
-      }, 1000);
-    }
-
-    // =============================================
-    //  HỌC VIÊN BẤM "ĐÃ SUBMIT"
-    // =============================================
-    function confirmSubmit() {
-      // Xoá listener reload
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-
-      // Ẩn blocker, hiện done screen
-      document.getElementById("timeUpBlocker").style.display = "none";
-      document.getElementById("examScreen").style.display    = "none";
-
-      const done = document.getElementById("doneScreen");
-      done.style.display = "flex";
-    }
-
-    // =============================================
-    //  KHOÁ HẲN sau grace period
-    // =============================================
-    function forceClose() {
-      // Ẩn iFrame hoàn toàn
-      document.getElementById("examFrame").src = "";
-      document.getElementById("examFrame").style.display = "none";
-
-      // Cập nhật nội dung blocker
-      document.getElementById("timeUpBlocker").innerHTML = `
-        <div class="timeup-card" style="border-color:#555;">
-          <div class="timeup-icon">🔒</div>
-          <h2 style="color:#aaa;">Phiên thi đã đóng</h2>
-          <p style="color:rgba(255,255,255,0.5);">
-            Thời gian nộp bài đã hết.<br/>
-            Bài thi của bạn <strong style="color:#ff4444;">không được ghi nhận</strong><br/>
-            do chưa Submit trước thời hạn.
-          </p>
-          <p style="margin-top:20px; font-size:12px; color:rgba(255,255,255,0.25);">
-            Vui lòng liên hệ giám thị nếu có vấn đề.
-          </p>
-        </div>`;
-    }
-
-    // =============================================
-    //  CHẶN RELOAD / ĐÓNG TAB TRONG KHI THI
-    // =============================================
-    function handleBeforeUnload(e) {
-      if (examEnded) return;
-      e.preventDefault();
-      e.returnValue = "Bạn đang trong kỳ thi! Rời trang sẽ mất bài làm.";
-      return e.returnValue;
-    }
-  </script>
+// ============================================================
+//  KHỞI CHẠY
+// ============================================================
+initLanding();
+</script>
 </body>
 </html>
