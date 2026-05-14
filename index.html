@@ -4,7 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Exam Portal</title>
-  <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,9 +13,7 @@
       min-height: 100vh; color: white;
     }
 
-    /* ==============================
-       LANDING
-    ============================== */
+    /* ==============================  LANDING  ============================== */
     #landing {
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh; padding: 24px;
@@ -31,7 +28,6 @@
     h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
     .subtitle { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 24px; line-height: 1.7; }
 
-    /* Progress */
     .progress-section {
       background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1);
       border-radius: 14px; padding: 20px; margin-bottom: 24px; text-align: left;
@@ -57,47 +53,29 @@
       border-radius: 10px; padding: 14px 16px; font-size: 13px;
       color: #ffd54f; margin-bottom: 22px; text-align: left; line-height: 1.9;
     }
-
-    /* Nút bắt đầu thi (chỉ hiện sau khi đăng nhập) */
     .btn-start {
       background: linear-gradient(135deg, #4f8ef7, #7c3aed);
       color: white; border: none; padding: 16px; font-size: 17px; font-weight: 700;
       border-radius: 50px; cursor: pointer; transition: all 0.3s; width: 100%; margin-bottom: 12px;
-      display: none; /* ẩn mặc định, hiện sau khi đăng nhập */
+      display: none;
     }
     .btn-start:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(79,142,247,0.45); }
     .btn-start:disabled { background: rgba(255,255,255,0.1); cursor: not-allowed; opacity: 0.5; }
 
-    /* Khu vực Google Sign-In */
-    .google-signin-area {
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
-      margin-bottom: 12px;
-    }
-    .signin-hint {
-      font-size: 13px; color: rgba(255,255,255,0.45);
-    }
-    #googleButtonDiv {
-      display: flex; justify-content: center;
-    }
+    .google-signin-area { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .signin-hint { font-size: 13px; color: rgba(255,255,255,0.45); }
 
-    /* Thông tin user đã đăng nhập */
     .user-info {
-      display: none;
-      align-items: center; justify-content: space-between;
+      display: none; align-items: center; justify-content: space-between;
       background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
-      border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;
-      text-align: left;
+      border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; text-align: left;
     }
-    .user-info .user-left { display: flex; align-items: center; gap: 12px; }
-    .user-avatar {
-      width: 40px; height: 40px; border-radius: 50%;
-      border: 2px solid rgba(34,197,94,0.5); object-fit: cover;
-    }
+    .user-left { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(34,197,94,0.5); object-fit: cover; }
     .user-avatar-fallback {
       width: 40px; height: 40px; border-radius: 50%;
       background: linear-gradient(135deg, #4f8ef7, #7c3aed);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700;
     }
     .user-name  { font-size: 14px; font-weight: 600; }
     .user-email { font-size: 12px; color: rgba(255,255,255,0.5); }
@@ -107,7 +85,6 @@
       border-radius: 20px; font-size: 11px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
     }
     .btn-signout:hover { border-color: rgba(255,100,100,0.5); color: rgba(255,100,100,0.7); }
-
     .btn-reset {
       background: transparent; border: 1px solid rgba(255,255,255,0.15);
       color: rgba(255,255,255,0.35); padding: 8px 20px;
@@ -115,63 +92,96 @@
     }
     .btn-reset:hover { border-color: rgba(255,100,100,0.5); color: rgba(255,100,100,0.7); }
 
-    /* ==============================
-       LOADING
-    ============================== */
-    #loadingOverlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(15,20,50,0.95); z-index: 999;
-      align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+    /* ==============================  EXAM SCREEN (Timer + Hướng dẫn)  ============================== */
+    #examScreen {
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
     }
-    .spinner {
-      width: 52px; height: 52px;
-      border: 5px solid rgba(255,255,255,0.1); border-top-color: #4f8ef7;
-      border-radius: 50%; animation: spin 0.9s linear infinite;
+    .exam-card {
+      background: rgba(255,255,255,0.07); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 40px 36px; max-width: 520px; width: 100%;
+      text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ==============================
-       EXAM SCREEN
-    ============================== */
-    #examScreen { display: none; flex-direction: column; min-height: 100vh; }
-    .exam-header {
-      background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 10px 24px; display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100; height: 60px; gap: 12px;
+    /* Timer lớn */
+    .timer-display {
+      background: rgba(0,0,0,0.35); border: 3px solid rgba(255,255,255,0.2);
+      border-radius: 20px; padding: 24px 32px; margin: 24px 0;
+      display: inline-block;
     }
-    .brand { font-weight: 700; font-size: 18px; white-space: nowrap; }
-    .brand span { color: #7c3aed; }
-    .header-center { display: flex; align-items: center; gap: 10px; }
-    .header-user-img {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.3); object-fit: cover;
+    .timer-label-top { font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    #timerBig {
+      font-size: 64px; font-weight: 800; font-family: 'Courier New', monospace;
+      letter-spacing: 4px; line-height: 1; transition: color 0.3s;
     }
-    .header-user-fallback {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: linear-gradient(135deg, #4f8ef7, #7c3aed);
-      display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
-    }
-    .attempt-label { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 600; }
-    .timer-wrap { display: flex; align-items: center; gap: 8px; }
-    .timer-label { font-size: 11px; color: rgba(255,255,255,0.45); white-space: nowrap; }
-    #timer {
-      background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 10px; padding: 5px 16px; font-size: 20px; font-weight: 700;
-      font-family: 'Courier New', monospace; letter-spacing: 2px;
-      min-width: 100px; text-align: center; transition: all 0.3s;
-    }
-    #timer.warn   { color: #ffaa00; border-color: #ffaa00; background: rgba(255,170,0,0.12); }
-    #timer.danger { color: #ff4444; border-color: #ff4444; background: rgba(255,68,68,0.12); animation: blink 0.8s infinite; }
+    #timerBig.warn   { color: #ffaa00; }
+    #timerBig.danger { color: #ff4444; animation: blink 0.8s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .exam-body { flex: 1; }
-    #examFrame { width: 100%; height: calc(100vh - 60px); border: none; display: block; background: white; transition: filter 0.4s; }
+    .timer-subtext { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 8px; }
 
-    /* ==============================
-       WARN POPUPS
-    ============================== */
+    /* Nút mở form */
+    .btn-open-form {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: linear-gradient(135deg, #4f8ef7, #7c3aed);
+      color: white; border: none; padding: 16px 24px; width: 100%;
+      font-size: 16px; font-weight: 700; border-radius: 50px;
+      cursor: pointer; transition: all 0.3s; margin-bottom: 16px;
+      box-shadow: 0 6px 20px rgba(79,142,247,0.35);
+      text-decoration: none;
+    }
+    .btn-open-form:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(79,142,247,0.5); }
+    .btn-open-form.opened {
+      background: rgba(255,255,255,0.08);
+      box-shadow: none; border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Hướng dẫn */
+    .steps-guide {
+      background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; text-align: left;
+    }
+    .guide-title { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .guide-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; color: rgba(255,255,255,0.7); padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05); line-height: 1.5;
+    }
+    .guide-item:last-child { border-bottom: none; }
+    .guide-num {
+      min-width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(79,142,247,0.3); border: 1px solid rgba(79,142,247,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #4f8ef7; flex-shrink: 0;
+    }
+    .guide-item.done-step .guide-num { background: rgba(34,197,94,0.3); border-color: rgba(34,197,94,0.5); color: #22c55e; }
+    .guide-item.done-step { color: rgba(255,255,255,0.4); text-decoration: line-through; }
+
+    /* Nút submit xác nhận */
+    #btnConfirmSubmit {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white; border: none; padding: 15px; width: 100%;
+      font-size: 16px; font-weight: 700; border-radius: 50px; cursor: pointer;
+      margin-bottom: 10px; box-shadow: 0 6px 20px rgba(34,197,94,0.35); transition: all 0.3s;
+      display: none;
+    }
+    #btnConfirmSubmit:hover { transform: translateY(-2px); }
+    .submit-hint { font-size: 12px; color: rgba(255,255,255,0.35); margin-bottom: 16px; display: none; }
+
+    /* Attempt info */
+    .attempt-info {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .attempt-badge {
+      background: rgba(79,142,247,0.2); border: 1px solid rgba(79,142,247,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 13px; font-weight: 600; color: #4f8ef7;
+    }
+
+    /* WARN POPUP */
     .warn-popup {
-      display: none; position: fixed; top: 76px; right: 20px;
+      display: none; position: fixed; top: 20px; right: 20px;
       background: #1e1e2e; border: 1px solid; border-radius: 14px;
       padding: 18px 22px; max-width: 300px; width: 88%; z-index: 500;
       box-shadow: 0 12px 40px rgba(0,0,0,0.5); animation: slideIn 0.4s ease;
@@ -186,18 +196,15 @@
       background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
       color: white; padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; width: 100%;
     }
-    .btn-close-popup:hover { background: rgba(255,255,255,0.2); }
 
-    /* ==============================
-       TIME-UP BLOCKER
-    ============================== */
+    /* TIME UP OVERLAY */
     #timeUpBlocker {
       display: none; position: fixed; inset: 0;
       z-index: 9999; align-items: center; justify-content: center;
     }
     #timeUpBlocker::before {
       content: ''; position: absolute; inset: 0;
-      background: rgba(10,5,30,0.88); backdrop-filter: blur(8px);
+      background: rgba(10,5,30,0.92); backdrop-filter: blur(8px);
     }
     .timeup-card {
       position: relative; background: linear-gradient(145deg, #1e1e3f, #2a1a4e);
@@ -209,19 +216,18 @@
     @keyframes popIn { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
     .timeup-icon { font-size: 60px; margin-bottom: 14px; }
     .timeup-card h2 { font-size: 26px; font-weight: 800; color: #ff4444; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; }
-    .timeup-card p { font-size: 14px; color: rgba(255,255,255,0.68); line-height: 1.7; margin-bottom: 24px; }
-    #btnConfirmSubmit {
-      background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none;
-      padding: 15px; width: 100%; font-size: 16px; font-weight: 700; border-radius: 50px;
-      cursor: pointer; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(34,197,94,0.35); transition: all 0.3s;
+    .timeup-card p { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 24px; }
+    .btn-timeup-confirm {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white; border: none; padding: 15px; width: 100%;
+      font-size: 16px; font-weight: 700; border-radius: 50px; cursor: pointer;
+      margin-bottom: 10px; box-shadow: 0 6px 20px rgba(34,197,94,0.35); transition: all 0.3s;
     }
-    #btnConfirmSubmit:hover { transform: translateY(-2px); }
-    .warn-text  { font-size: 11px; color: rgba(255,68,68,0.65); margin-top: 8px; }
-    .block-countdown { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 8px; }
+    .btn-timeup-confirm:hover { transform: translateY(-2px); }
+    .warn-text  { font-size: 11px; color: rgba(255,68,68,0.65); }
+    .grace-countdown { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 10px; }
 
-    /* ==============================
-       DONE SCREEN
-    ============================== */
+    /* DONE SCREEN */
     #doneScreen {
       display: none; position: fixed; inset: 0;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -244,7 +250,6 @@
     .done-step-labels { display: flex; gap: 8px; }
     .done-step-label  { flex: 1; text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); }
     .done-step-label.done   { color: #22c55e; }
-    .done-step-label.active { color: #4f8ef7; }
     .done-next-hint {
       font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 8px; padding: 12px 16px;
       background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.25); border-radius: 10px;
@@ -265,20 +270,15 @@
     <h1>Exam Portal</h1>
     <p class="subtitle">Hệ thống thi trực tuyến<br/>Hoàn thành 4 lần thi để ôn tập đầy đủ kiến thức</p>
 
-    <!-- Progress -->
     <div class="progress-section">
       <div class="progress-title">📊 Tiến trình của bạn</div>
       <div class="progress-steps">
-        <div class="step" id="step0"></div>
-        <div class="step" id="step1"></div>
-        <div class="step" id="step2"></div>
-        <div class="step" id="step3"></div>
+        <div class="step" id="step0"></div><div class="step" id="step1"></div>
+        <div class="step" id="step2"></div><div class="step" id="step3"></div>
       </div>
       <div class="progress-labels">
-        <div class="plabel" id="lbl0">Lần 1</div>
-        <div class="plabel" id="lbl1">Lần 2</div>
-        <div class="plabel" id="lbl2">Lần 3</div>
-        <div class="plabel" id="lbl3">Lần 4</div>
+        <div class="plabel" id="lbl0">Lần 1</div><div class="plabel" id="lbl1">Lần 2</div>
+        <div class="plabel" id="lbl2">Lần 3</div><div class="plabel" id="lbl3">Lần 4</div>
       </div>
       <div class="history-list" id="historyList"></div>
     </div>
@@ -287,58 +287,83 @@
       ⚠️ <strong>Lưu ý trước khi thi:</strong><br/>
       • Cần đăng nhập bằng <strong>tài khoản Google (Gmail)</strong><br/>
       • Thời gian thi: <strong>90 phút / lần</strong><br/>
-      • <strong>Bắt buộc bấm Submit</strong> trên Form khi hết giờ<br/>
-      • Không tắt hoặc reload trang trong khi làm bài
+      • Form thi sẽ mở trong <strong>tab mới</strong> — không đóng tab này<br/>
+      • <strong>Bắt buộc bấm Submit</strong> trên Form khi hết giờ
     </div>
 
-    <!-- Thông tin user đã đăng nhập -->
     <div class="user-info" id="userInfo">
       <div class="user-left">
-        <img id="userAvatar" class="user-avatar" src="" alt="" onerror="this.style.display='none'; document.getElementById('userAvatarFallback').style.display='flex'"/>
-        <div id="userAvatarFallback" class="user-avatar-fallback" style="display:none;"></div>
+        <img id="userAvatar" class="user-avatar" src="" alt=""
+             onerror="this.style.display='none';document.getElementById('userAvatarFb').style.display='flex'"/>
+        <div id="userAvatarFb" class="user-avatar-fallback" style="display:none;"></div>
         <div>
-          <div class="user-name" id="userName"></div>
+          <div class="user-name"  id="userName"></div>
           <div class="user-email" id="userEmail"></div>
         </div>
       </div>
       <button class="btn-signout" onclick="signOut()">Đăng xuất</button>
     </div>
 
-    <!-- Google Sign-In Button (hiện khi chưa đăng nhập) -->
     <div class="google-signin-area" id="googleSigninArea">
       <span class="signin-hint">Đăng nhập để bắt đầu thi</span>
       <div id="googleButtonDiv"></div>
     </div>
 
-    <!-- Nút bắt đầu thi (hiện sau khi đăng nhập) -->
     <button class="btn-start" id="btnStart" onclick="startExam()">🚀 Bắt đầu thi</button>
     <button class="btn-reset" onclick="resetProgress()">🔄 Reset tiến trình (dev)</button>
   </div>
 </div>
 
-<!-- ========== LOADING ========== -->
-<div id="loadingOverlay">
-  <div class="spinner"></div>
-  <p style="color:rgba(255,255,255,0.6);font-size:14px;">Đang tải đề thi...</p>
-</div>
-
 <!-- ========== EXAM SCREEN ========== -->
 <div id="examScreen">
-  <div class="exam-header">
-    <div class="brand">Exam<span>Portal</span></div>
-    <div class="header-center">
-      <img id="headerUserImg" class="header-user-img" src="" alt=""
-           onerror="this.style.display='none'; document.getElementById('headerUserFallback').style.display='flex'"/>
-      <div id="headerUserFallback" class="header-user-fallback" style="display:none;"></div>
-      <span class="attempt-label" id="headerAttempt"></span>
+  <div class="exam-card">
+
+    <div class="attempt-info">
+      <span class="attempt-badge" id="attemptBadge">Lần thi 1 / 4</span>
     </div>
-    <div class="timer-wrap">
-      <span class="timer-label">Còn lại</span>
-      <div id="timer">90:00</div>
+    <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:4px;" id="examUserName"></p>
+
+    <!-- Timer -->
+    <div class="timer-display" id="timerDisplay">
+      <div class="timer-label-top">⏱ Thời gian còn lại</div>
+      <div id="timerBig">90:00</div>
+      <div class="timer-subtext">Hãy Submit bài trước khi hết giờ!</div>
     </div>
-  </div>
-  <div class="exam-body">
-    <iframe id="examFrame" src="" allowfullscreen></iframe>
+
+    <!-- Hướng dẫn các bước -->
+    <div class="steps-guide">
+      <div class="guide-title">📋 Hướng dẫn làm bài</div>
+      <div class="guide-item done-step" id="guideStep1">
+        <div class="guide-num">✓</div>
+        <div>Đã đăng nhập Google thành công</div>
+      </div>
+      <div class="guide-item" id="guideStep2">
+        <div class="guide-num">2</div>
+        <div>Bấm <strong style="color:white;">"Mở đề thi"</strong> bên dưới → Form mở trong tab mới → Làm bài</div>
+      </div>
+      <div class="guide-item" id="guideStep3">
+        <div class="guide-num">3</div>
+        <div>Khi hết giờ hoặc làm xong → <strong style="color:white;">Submit</strong> bài trên Form</div>
+      </div>
+      <div class="guide-item" id="guideStep4">
+        <div class="guide-num">4</div>
+        <div>Quay lại tab này → Bấm <strong style="color:#22c55e;">"Xác nhận đã Submit"</strong></div>
+      </div>
+    </div>
+
+    <!-- Nút mở form -->
+    <button class="btn-open-form" id="btnOpenForm" onclick="openFormTab()">
+      📄 Mở đề thi (tab mới)
+    </button>
+
+    <!-- Nút xác nhận submit (ẩn cho đến khi form được mở) -->
+    <button id="btnConfirmSubmit" onclick="confirmSubmit()">
+      ✅ Xác nhận đã Submit bài
+    </button>
+    <p class="submit-hint" id="submitHint">
+      ⚠️ Chỉ bấm sau khi đã Submit bài trên Google Form
+    </p>
+
   </div>
 </div>
 
@@ -346,7 +371,7 @@
 <div class="warn-popup warn5" id="popup5">
   <div class="wp-icon">⚠️</div>
   <h3 style="color:#ffaa00;">Còn 5 phút!</h3>
-  <p>Hãy kiểm tra lại bài và <strong style="color:white;">bấm Submit</strong> trên Form trước khi hết giờ!</p>
+  <p>Mau kiểm tra bài và <strong style="color:white;">bấm Submit</strong> trên Form Google!</p>
   <button class="btn-close-popup" onclick="closePopup('popup5')">✅ Tôi hiểu rồi</button>
 </div>
 
@@ -354,7 +379,7 @@
 <div class="warn-popup warn1" id="popup1">
   <div class="wp-icon">🚨</div>
   <h3 style="color:#ff4444;">Còn 1 phút — Submit ngay!</h3>
-  <p>Cuộn xuống cuối Form và bấm <strong style="color:white;">Submit</strong> ngay!</p>
+  <p>Chuyển sang tab Form và bấm <strong style="color:white;">Submit</strong> ngay bây giờ!</p>
   <button class="btn-close-popup" onclick="closePopup('popup1')">🏃 Submit ngay!</button>
 </div>
 
@@ -364,14 +389,14 @@
     <div class="timeup-icon">⏰</div>
     <h2>Hết giờ!</h2>
     <p>
-      Thời gian thi <strong>90 phút</strong> đã kết thúc.<br/><br/>
-      Cuộn xuống cuối Form phía sau và bấm
-      <strong style="color:#22c55e;">Submit</strong> ngay,
-      sau đó bấm xác nhận bên dưới.
+      Thời gian thi <strong>90 phút</strong> đã hết.<br/><br/>
+      Chuyển sang <strong style="color:#4f8ef7;">tab Google Form</strong> và bấm
+      <strong style="color:#22c55e;">Submit</strong> ngay,<br/>
+      sau đó quay lại đây và bấm xác nhận.
     </p>
-    <button id="btnConfirmSubmit" onclick="confirmSubmit()">✅ Tôi đã Submit bài rồi</button>
-    <p class="warn-text">⛔ Chưa Submit → bài thi không được ghi nhận</p>
-    <p class="block-countdown" id="blockCountdown"></p>
+    <button class="btn-timeup-confirm" onclick="confirmSubmit()">✅ Tôi đã Submit bài rồi</button>
+    <p class="warn-text">⛔ Chưa Submit trên Form → bài thi không được ghi nhận</p>
+    <p class="grace-countdown" id="graceCountdown"></p>
   </div>
 </div>
 
@@ -384,16 +409,12 @@
     <div class="done-progress">
       <div class="done-progress-title">📊 Tiến trình tổng thể</div>
       <div class="done-steps">
-        <div class="done-step" id="ds0"></div>
-        <div class="done-step" id="ds1"></div>
-        <div class="done-step" id="ds2"></div>
-        <div class="done-step" id="ds3"></div>
+        <div class="done-step" id="ds0"></div><div class="done-step" id="ds1"></div>
+        <div class="done-step" id="ds2"></div><div class="done-step" id="ds3"></div>
       </div>
       <div class="done-step-labels">
-        <div class="done-step-label" id="dl0">Lần 1</div>
-        <div class="done-step-label" id="dl1">Lần 2</div>
-        <div class="done-step-label" id="dl2">Lần 3</div>
-        <div class="done-step-label" id="dl3">Lần 4</div>
+        <div class="done-step-label" id="dl0">Lần 1</div><div class="done-step-label" id="dl1">Lần 2</div>
+        <div class="done-step-label" id="dl2">Lần 3</div><div class="done-step-label" id="dl3">Lần 4</div>
       </div>
     </div>
     <div id="doneNextHint"></div>
@@ -403,19 +424,15 @@
 
 <script>
 // ============================================================
-//  ⚙️ CẤU HÌNH — ĐIỀN CLIENT ID CỦA BẠN VÀO ĐÂY
+//  CẤU HÌNH
 // ============================================================
-const GOOGLE_CLIENT_ID = "917719477678-fpjgtpla497hpub78837pk5heaj4kaif.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "YOUR_CLIENT_ID.apps.googleusercontent.com";
 
 const CONFIG = {
-  examMinutes  : 90,
-  storageKey   : "examPortal_progress",
-  totalAttempts: 4,
+  examMinutes : 90,
+  storageKey  : "examPortal_progress",
 };
 
-// ============================================================
-//  FORM IDs
-// ============================================================
 const EXAM_GROUPS = {
   A: [
     "1FAIpQLSdWyvc18tdxqiA9mAfSkfi1KSl2UW5lo0uK7exJyUVM9Swpow",
@@ -447,66 +464,36 @@ let timerInterval = null;
 let warned5       = false;
 let warned1       = false;
 let examEnded     = false;
-let currentUser   = null; // { name, email, picture }
+let formOpened    = false;
+let currentUser   = null;
 
 // ============================================================
-//  GOOGLE SIGN-IN INIT
+//  GOOGLE SIGN-IN
 // ============================================================
 window.onGoogleLibraryLoad = () => {
   google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback : handleGoogleSignIn,
-    auto_select: true, // tự đăng nhập lại nếu đã từng đăng nhập
+    client_id  : GOOGLE_CLIENT_ID,
+    callback   : handleGoogleSignIn,
+    auto_select: true,
   });
-
   google.accounts.id.renderButton(
     document.getElementById("googleButtonDiv"),
-    {
-      type : "standard",
-      theme: "filled_blue",
-      size : "large",
-      text : "signin_with",
-      shape: "pill",
-      width: "280",
-      locale: "vi",
-    }
+    { type:"standard", theme:"filled_blue", size:"large", shape:"pill", width:"280", locale:"vi" }
   );
-
-  // Kiểm tra session cũ trong localStorage
-  const savedUser = loadUser();
-  if (savedUser) {
-    currentUser = savedUser;
-    onSignedIn();
-  }
+  const saved = loadUser();
+  if (saved) { currentUser = saved; onSignedIn(); }
 };
 
-// ============================================================
-//  XỬ LÝ KẾT QUẢ ĐĂNG NHẬP GOOGLE
-// ============================================================
 function handleGoogleSignIn(response) {
-  // Decode JWT payload (base64)
-  const base64Url = response.credential.split(".")[1];
-  const base64    = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const payload   = JSON.parse(atob(base64));
-
-  currentUser = {
-    name   : payload.name,
-    email  : payload.email,
-    picture: payload.picture || "",
-    sub    : payload.sub,
-  };
-
-  // Lưu user vào localStorage để giữ session
+  const payload = JSON.parse(atob(response.credential.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")));
+  currentUser = { name: payload.name, email: payload.email, picture: payload.picture || "", sub: payload.sub };
   saveUser(currentUser);
   onSignedIn();
 }
 
 function onSignedIn() {
-  // Hiện thông tin user
-  document.getElementById("userInfo").style.display       = "flex";
+  document.getElementById("userInfo").style.display        = "flex";
   document.getElementById("googleSigninArea").style.display = "none";
-
-  // Điền thông tin
   document.getElementById("userName").textContent  = currentUser.name;
   document.getElementById("userEmail").textContent = currentUser.email;
 
@@ -514,109 +501,68 @@ function onSignedIn() {
     document.getElementById("userAvatar").src = currentUser.picture;
     document.getElementById("userAvatar").style.display = "block";
   } else {
-    document.getElementById("userAvatarFallback").textContent = currentUser.name.charAt(0).toUpperCase();
-    document.getElementById("userAvatarFallback").style.display = "flex";
+    document.getElementById("userAvatarFb").textContent   = currentUser.name.charAt(0).toUpperCase();
+    document.getElementById("userAvatarFb").style.display = "flex";
   }
 
-  // Hiện nút bắt đầu thi
   const progress  = loadProgress();
   const doneCount = progress.attempts.length;
-  const btnStart  = document.getElementById("btnStart");
-  btnStart.style.display = "block";
+  const btn       = document.getElementById("btnStart");
+  btn.style.display = "block";
 
   if (doneCount >= 4) {
-    btnStart.textContent = "✅ Đã hoàn thành 4 lần thi";
-    btnStart.disabled    = true;
+    btn.textContent = "✅ Đã hoàn thành 4 lần thi";
+    btn.disabled    = true;
   } else {
-    btnStart.textContent = `🚀 Bắt đầu lần thi ${doneCount + 1}`;
-    btnStart.disabled    = false;
+    btn.textContent = `🚀 Bắt đầu lần thi ${doneCount + 1}`;
+    btn.disabled    = false;
   }
 }
 
-// ============================================================
-//  ĐĂNG XUẤT
-// ============================================================
 function signOut() {
   google.accounts.id.disableAutoSelect();
   currentUser = null;
   localStorage.removeItem("examPortal_user");
-
   document.getElementById("userInfo").style.display        = "none";
   document.getElementById("googleSigninArea").style.display = "flex";
   document.getElementById("btnStart").style.display         = "none";
-
-  // Re-render button
   google.accounts.id.renderButton(
     document.getElementById("googleButtonDiv"),
-    { type: "standard", theme: "filled_blue", size: "large", shape: "pill", width: "280", locale: "vi" }
+    { type:"standard", theme:"filled_blue", size:"large", shape:"pill", width:"280", locale:"vi" }
   );
 }
 
 // ============================================================
-//  LOCAL STORAGE — User
+//  LOCAL STORAGE
 // ============================================================
-function saveUser(user) {
-  localStorage.setItem("examPortal_user", JSON.stringify(user));
-}
-function loadUser() {
-  try {
-    const raw = localStorage.getItem("examPortal_user");
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
-}
-
-// ============================================================
-//  LOCAL STORAGE — Progress
-// ============================================================
-function loadProgress() {
-  try {
-    const raw = localStorage.getItem(CONFIG.storageKey);
-    return raw ? JSON.parse(raw) : { attempts: [] };
-  } catch { return { attempts: [] }; }
-}
-function saveProgress(data) {
-  localStorage.setItem(CONFIG.storageKey, JSON.stringify(data));
-}
+function saveUser(u)    { localStorage.setItem("examPortal_user", JSON.stringify(u)); }
+function loadUser()     { try { const r=localStorage.getItem("examPortal_user"); return r?JSON.parse(r):null; } catch{return null;} }
+function loadProgress() { try { const r=localStorage.getItem(CONFIG.storageKey); return r?JSON.parse(r):{attempts:[]}; } catch{return {attempts:[]};} }
+function saveProgress(d){ localStorage.setItem(CONFIG.storageKey, JSON.stringify(d)); }
 
 // ============================================================
 //  INIT LANDING
 // ============================================================
 function initLanding() {
-  const progress  = loadProgress();
-  const attempts  = progress.attempts || [];
-  const doneCount = attempts.length;
+  const { attempts } = loadProgress();
+  const doneCount    = attempts.length;
 
   for (let i = 0; i < 4; i++) {
-    const stepEl = document.getElementById(`step${i}`);
-    const lblEl  = document.getElementById(`lbl${i}`);
-    if (i < doneCount) {
-      stepEl.classList.add("done");
-      lblEl.classList.add("done");
-      lblEl.textContent = `Lần ${i+1} ✓`;
-    } else if (i === doneCount && doneCount < 4) {
-      stepEl.classList.add("active");
-      lblEl.classList.add("active");
-    }
+    const s = document.getElementById(`step${i}`);
+    const l = document.getElementById(`lbl${i}`);
+    if (i < doneCount)                   { s.classList.add("done");   l.classList.add("done");   l.textContent = `Lần ${i+1} ✓`; }
+    else if (i === doneCount && i < 4)   { s.classList.add("active"); l.classList.add("active"); }
   }
 
   const histEl = document.getElementById("historyList");
-  if (attempts.length > 0) {
-    histEl.innerHTML = attempts.map(a => `
-      <div class="history-item">
-        <span style="color:rgba(255,255,255,0.6);">Lần ${a.attempt} — ${a.timestamp}</span>
-        <span style="color:#22c55e;">✅</span>
-      </div>
-    `).join("");
-  } else {
-    histEl.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center;padding:6px;">Chưa có lịch sử thi</div>`;
-  }
+  histEl.innerHTML = attempts.length
+    ? attempts.map(a => `<div class="history-item"><span style="color:rgba(255,255,255,0.6)">Lần ${a.attempt} — ${a.timestamp}</span><span style="color:#22c55e">✅</span></div>`).join("")
+    : `<div style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center;padding:6px">Chưa có lịch sử thi</div>`;
 
-  const noticeEl = document.getElementById("mainNotice");
   if (doneCount >= 4) {
-    noticeEl.innerHTML   = `🎉 <strong>Bạn đã hoàn thành tất cả 4 lần thi!</strong><br/>Liên hệ giảng viên để nhận kết quả tổng hợp. 🏆`;
-    noticeEl.style.borderColor = "rgba(34,197,94,0.5)";
-    noticeEl.style.background  = "rgba(34,197,94,0.1)";
-    noticeEl.style.color       = "#86efac";
+    const n = document.getElementById("mainNotice");
+    n.innerHTML = `🎉 <strong>Bạn đã hoàn thành tất cả 4 lần thi!</strong><br/>Liên hệ giảng viên để nhận kết quả. 🏆`;
+    n.style.cssText += ";border-color:rgba(34,197,94,0.5);background:rgba(34,197,94,0.1);color:#86efac";
   }
 }
 
@@ -625,77 +571,114 @@ function initLanding() {
 // ============================================================
 function startExam() {
   if (!currentUser) { alert("Vui lòng đăng nhập Google trước!"); return; }
-
   const progress  = loadProgress();
   const doneCount = progress.attempts.length;
-  if (doneCount >= 4) { alert("✅ Bạn đã hoàn thành cả 4 lần thi rồi!"); return; }
+  if (doneCount >= 4) { alert("✅ Bạn đã hoàn thành cả 4 lần thi!"); return; }
 
   const currentGroup = GROUP_ORDER[doneCount] || "A";
-  const usedExamIds  = progress.attempts.filter(a => a.group === currentGroup).map(a => a.examId);
-  const pool         = EXAM_GROUPS[currentGroup].filter(id => !usedExamIds.includes(id));
-  const selectedPool = pool.length > 0 ? pool : EXAM_GROUPS[currentGroup];
-  const selectedId   = selectedPool[Math.floor(Math.random() * selectedPool.length)];
+  const usedIds      = progress.attempts.filter(a=>a.group===currentGroup).map(a=>a.examId);
+  const pool         = EXAM_GROUPS[currentGroup].filter(id=>!usedIds.includes(id));
+  const selected     = (pool.length>0?pool:EXAM_GROUPS[currentGroup])[Math.floor(Math.random()*(pool.length||EXAM_GROUPS[currentGroup].length))];
 
-  document.getElementById("loadingOverlay").style.display = "flex";
+  sessionStorage.setItem("currentExam", JSON.stringify({
+    attempt  : doneCount + 1,
+    group    : currentGroup,
+    examId   : selected,
+    email    : currentUser.email,
+    name     : currentUser.name,
+    timestamp: new Date().toLocaleDateString("vi-VN") + " " +
+               new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"}),
+  }));
 
-  setTimeout(() => {
-    const embedURL = `https://docs.google.com/forms/d/e/${selectedId}/viewform?embedded=true`;
-    document.getElementById("examFrame").src = embedURL;
-    document.getElementById("headerAttempt").textContent = `Lần thi ${doneCount + 1} / 4`;
+  // Chuyển sang exam screen
+  document.getElementById("landing").style.display    = "none";
+  document.getElementById("examScreen").style.display = "flex";
 
-    // Avatar trên header
-    if (currentUser.picture) {
-      document.getElementById("headerUserImg").src = currentUser.picture;
-      document.getElementById("headerUserImg").style.display = "block";
-    } else {
-      document.getElementById("headerUserFallback").textContent = currentUser.name.charAt(0).toUpperCase();
-      document.getElementById("headerUserFallback").style.display = "flex";
-    }
+  // Cập nhật UI exam screen
+  document.getElementById("attemptBadge").textContent = `Lần thi ${doneCount+1} / 4`;
+  document.getElementById("examUserName").textContent  = `👤 ${currentUser.name} · ${currentUser.email}`;
 
-    document.getElementById("loadingOverlay").style.display = "none";
-    document.getElementById("landing").style.display        = "none";
-    document.getElementById("examScreen").style.display     = "flex";
+  // Reset state
+  formOpened   = false;
+  totalSeconds = CONFIG.examMinutes * 60;
+  warned5      = false;
+  warned1      = false;
+  examEnded    = false;
 
-    totalSeconds = CONFIG.examMinutes * 60;
-    warned5 = false; warned1 = false; examEnded = false;
-    startCountdown();
+  // Ẩn nút confirm lúc đầu
+  document.getElementById("btnConfirmSubmit").style.display = "none";
+  document.getElementById("submitHint").style.display       = "none";
+  document.getElementById("btnOpenForm").classList.remove("opened");
+  document.getElementById("btnOpenForm").textContent        = "📄 Mở đề thi (tab mới)";
 
-    sessionStorage.setItem("currentExam", JSON.stringify({
-      attempt  : doneCount + 1,
-      group    : currentGroup,
-      examId   : selectedId,
-      email    : currentUser.email,
-      name     : currentUser.name,
-      timestamp: new Date().toLocaleDateString("vi-VN") + " " +
-                 new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
-    }));
+  // Reset guide steps
+  document.getElementById("guideStep2").classList.remove("done-step");
+  document.getElementById("guideStep3").classList.remove("done-step");
+  document.getElementById("guideStep4").classList.remove("done-step");
+  document.getElementById("guideStep2").querySelector(".guide-num").textContent = "2";
+  document.getElementById("guideStep3").querySelector(".guide-num").textContent = "3";
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-  }, 1400);
+  startCountdown();
+}
+
+// ============================================================
+//  MỞ FORM TRONG TAB MỚI
+// ============================================================
+function openFormTab() {
+  const exam = JSON.parse(sessionStorage.getItem("currentExam") || "{}");
+  if (!exam.examId) return;
+
+  const url = `https://docs.google.com/forms/d/e/${exam.examId}/viewform`;
+  window.open(url, "_blank");
+
+  // Cập nhật UI sau khi mở form
+  formOpened = true;
+  const btnOpen = document.getElementById("btnOpenForm");
+  btnOpen.textContent = "📄 Mở lại đề thi";
+  btnOpen.classList.add("opened");
+
+  // Hiện nút xác nhận
+  document.getElementById("btnConfirmSubmit").style.display = "block";
+  document.getElementById("submitHint").style.display       = "block";
+
+  // Đánh dấu bước 2 hoàn thành
+  const step2 = document.getElementById("guideStep2");
+  step2.classList.add("done-step");
+  step2.querySelector(".guide-num").textContent = "✓";
 }
 
 // ============================================================
 //  COUNTDOWN
 // ============================================================
 function startCountdown() {
-  const timerEl = document.getElementById("timer");
+  clearInterval(timerInterval);
+  const timerEl = document.getElementById("timerBig");
+
   timerInterval = setInterval(() => {
     if (examEnded) return;
-    const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
-    const s = (totalSeconds % 60).toString().padStart(2, "0");
+
+    const m = Math.floor(totalSeconds / 60).toString().padStart(2,"0");
+    const s = (totalSeconds % 60).toString().padStart(2,"0");
     timerEl.textContent = `${m}:${s}`;
-    timerEl.className = "";
+    timerEl.className   = "";
+
     if (totalSeconds <= 300) timerEl.classList.add("warn");
     if (totalSeconds <= 60)  timerEl.classList.add("danger");
-    if (!warned5 && totalSeconds === 300) { warned5 = true; showPopup("popup5"); }
-    if (!warned1 && totalSeconds === 60)  { warned1 = true; closePopup("popup5"); showPopup("popup1"); }
-    if (totalSeconds <= 0) { clearInterval(timerInterval); timerEl.textContent = "00:00"; triggerTimeUp(); return; }
+    if (!warned5 && totalSeconds === 300) { warned5=true; showPopup("popup5"); }
+    if (!warned1 && totalSeconds === 60)  { warned1=true; closePopup("popup5"); showPopup("popup1"); }
+
+    if (totalSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerEl.textContent = "00:00";
+      triggerTimeUp();
+      return;
+    }
     totalSeconds--;
   }, 1000);
 }
 
-function showPopup(id) { document.getElementById(id).style.display = "block"; setTimeout(() => closePopup(id), 15000); }
-function closePopup(id) { document.getElementById(id).style.display = "none"; }
+function showPopup(id)  { document.getElementById(id).style.display="block"; setTimeout(()=>closePopup(id),15000); }
+function closePopup(id) { document.getElementById(id).style.display="none"; }
 
 // ============================================================
 //  HẾT GIỜ
@@ -703,30 +686,39 @@ function closePopup(id) { document.getElementById(id).style.display = "none"; }
 function triggerTimeUp() {
   examEnded = true;
   closePopup("popup5"); closePopup("popup1");
-  document.getElementById("examFrame").style.filter        = "blur(3px) brightness(0.35)";
-  document.getElementById("examFrame").style.pointerEvents = "none";
-  document.getElementById("timeUpBlocker").style.display   = "flex";
+  document.getElementById("timeUpBlocker").style.display = "flex";
 
-  let graceSeconds = 600;
-  const blockEl    = document.getElementById("blockCountdown");
-  const graceTimer = setInterval(() => {
-    if (graceSeconds <= 0) { clearInterval(graceTimer); forceClose(); return; }
-    const gm = Math.floor(graceSeconds / 60).toString().padStart(2, "0");
-    const gs = (graceSeconds % 60).toString().padStart(2, "0");
-    blockEl.textContent = `⏳ Cửa sổ Submit đóng sau ${gm}:${gs}`;
-    graceSeconds--;
+  // Nếu chưa mở form → tự mở luôn
+  if (!formOpened) openFormTab();
+
+  // Đánh dấu bước 3
+  const step3 = document.getElementById("guideStep3");
+  step3.classList.add("done-step");
+  step3.querySelector(".guide-num").textContent = "✓";
+
+  let grace = 600;
+  const graceEl = document.getElementById("graceCountdown");
+  const t = setInterval(() => {
+    if (grace <= 0) { clearInterval(t); forceClose(); return; }
+    const gm = Math.floor(grace/60).toString().padStart(2,"0");
+    const gs = (grace%60).toString().padStart(2,"0");
+    graceEl.textContent = `⏳ Cửa sổ xác nhận đóng sau ${gm}:${gs}`;
+    grace--;
   }, 1000);
 }
 
 // ============================================================
-//  CONFIRM SUBMIT
+//  XÁC NHẬN ĐÃ SUBMIT
 // ============================================================
 function confirmSubmit() {
-  window.removeEventListener("beforeunload", handleBeforeUnload);
+  clearInterval(timerInterval);
+  examEnded = true;
+
   const currentExam = JSON.parse(sessionStorage.getItem("currentExam") || "{}");
   const progress    = loadProgress();
   progress.attempts.push(currentExam);
   saveProgress(progress);
+
   document.getElementById("timeUpBlocker").style.display = "none";
   document.getElementById("examScreen").style.display    = "none";
   showDoneScreen(progress.attempts);
@@ -738,23 +730,24 @@ function confirmSubmit() {
 function showDoneScreen(attempts) {
   const doneCount = attempts.length;
   document.getElementById("doneScreen").style.display = "flex";
+
   for (let i = 0; i < 4; i++) {
-    const stepEl = document.getElementById(`ds${i}`);
-    const lblEl  = document.getElementById(`dl${i}`);
-    if (i < doneCount)      { stepEl.classList.add("done");   lblEl.classList.add("done");   lblEl.textContent = `Lần ${i+1} ✓`; }
-    else if (i === doneCount){ stepEl.classList.add("active"); }
+    const s = document.getElementById(`ds${i}`);
+    const l = document.getElementById(`dl${i}`);
+    if (i < doneCount)       { s.classList.add("done");   l.classList.add("done");   l.textContent=`Lần ${i+1} ✓`; }
+    else if (i === doneCount){ s.classList.add("active"); }
   }
-  const hintEl = document.getElementById("doneNextHint");
+
+  const hint = document.getElementById("doneNextHint");
   if (doneCount >= 4) {
     document.getElementById("doneIcon").textContent  = "🏆";
     document.getElementById("doneTitle").textContent = "Hoàn thành xuất sắc!";
-    document.getElementById("doneMsg").innerHTML     = `Bạn đã hoàn thành <strong>toàn bộ 4 lần thi</strong>!<br/>Liên hệ giảng viên để nhận kết quả tổng hợp. 🎓`;
-    hintEl.innerHTML = `<div class="done-completed">🎉 Chúc mừng! Bạn đã ôn tập đầy đủ kiến thức!</div>`;
+    document.getElementById("doneMsg").innerHTML     = `Bạn đã hoàn thành <strong>toàn bộ 4 lần thi</strong>!<br/>Liên hệ giảng viên để nhận kết quả. 🎓`;
+    hint.innerHTML = `<div class="done-completed">🎉 Chúc mừng! Bạn đã ôn tập đầy đủ kiến thức!</div>`;
   } else {
-    const remaining = 4 - doneCount;
     document.getElementById("doneTitle").textContent = "Nộp bài thành công!";
-    document.getElementById("doneMsg").innerHTML     = `Cảm ơn bạn đã hoàn thành lần thi <strong>${doneCount} / 4</strong>.<br/>Còn <strong>${remaining} lần thi</strong> nữa, hẹn gặp lại! 💪`;
-    hintEl.innerHTML = `<div class="done-next-hint">📌 Quay lại trang này khi sẵn sàng để tiếp tục lần thi tiếp theo!</div>`;
+    document.getElementById("doneMsg").innerHTML     = `Cảm ơn bạn đã hoàn thành lần thi <strong>${doneCount} / 4</strong>.<br/>Còn <strong>${4-doneCount} lần thi</strong> nữa, hẹn gặp lại! 💪`;
+    hint.innerHTML = `<div class="done-next-hint">📌 Quay lại trang này khi sẵn sàng để tiếp tục!</div>`;
   }
 }
 
@@ -762,39 +755,23 @@ function showDoneScreen(attempts) {
 //  FORCE CLOSE
 // ============================================================
 function forceClose() {
-  document.getElementById("examFrame").src           = "";
-  document.getElementById("examFrame").style.display = "none";
   document.getElementById("timeUpBlocker").innerHTML = `
     <div class="timeup-card" style="border-color:#444;">
       <div class="timeup-icon">🔒</div>
       <h2 style="color:#888;">Phiên thi đã đóng</h2>
       <p style="color:rgba(255,255,255,0.45);">Thời gian nộp bài đã hết.<br/>
-        Bài thi <strong style="color:#ff4444;">không được ghi nhận</strong><br/>
-        do chưa Submit trước thời hạn.<br/><br/>Vui lòng liên hệ giám thị.</p>
+      Bài thi <strong style="color:#ff4444;">không được ghi nhận</strong>.<br/><br/>Vui lòng liên hệ giám thị.</p>
     </div>`;
 }
 
-// ============================================================
-//  RESET
-// ============================================================
 function resetProgress() {
-  if (confirm("⚠️ Reset toàn bộ tiến trình thi?")) {
+  if (confirm("⚠️ Reset toàn bộ tiến trình?")) {
     localStorage.removeItem(CONFIG.storageKey);
     sessionStorage.clear();
     location.reload();
   }
 }
 
-function handleBeforeUnload(e) {
-  if (examEnded) return;
-  e.preventDefault();
-  e.returnValue = "Bạn đang trong kỳ thi! Rời trang sẽ mất bài làm.";
-  return e.returnValue;
-}
-
-// ============================================================
-//  KHỞI CHẠY
-// ============================================================
 initLanding();
 </script>
 </body>
